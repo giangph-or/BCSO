@@ -131,15 +131,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ApproxByGurobi.h" />
+    <ClInclude Include="BCMILPSolver.h" />
+    <ClInclude Include="BCMISOCPSolver.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="McCormick.h" />
+    <ClInclude Include="MILPSolver.h" />
     <ClInclude Include="MISOCPSolver.h" />
     <ClInclude Include="Param.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ApproxByGurobi.cpp" />
+    <ClCompile Include="BCMILPSolver.cpp" />
+    <ClCompile Include="BCMISOCPSolver.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="McCormick.cpp" />
+    <ClCompile Include="MILPSolver.cpp" />
     <ClCompile Include="MISOCPSolver.cpp" />
     <ClCompile Include="Param.cpp" />
   </ItemGroup>

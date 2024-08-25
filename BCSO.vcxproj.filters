@@ -27,6 +27,18 @@
     <ClInclude Include="MISOCPSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ApproxByGurobi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MILPSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BCMISOCPSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BCMILPSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Data.cpp">
@@ -42,6 +54,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MISOCPSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ApproxByGurobi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MILPSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BCMISOCPSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BCMILPSolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

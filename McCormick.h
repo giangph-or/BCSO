@@ -76,3 +76,5 @@ public:
         vector<double> U, vector<vector<double>> hl,
         vector<vector<vector<double>>> gamma_h);
 };
+
+#pragma once

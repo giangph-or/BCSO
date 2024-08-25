@@ -30,9 +30,14 @@ Param::Param(Data data, int K, double tol_lamda, int M) {
     gamma_g = cpt_gamma_g(data.T, data.m, K, data.eta, data.kappa, data.L, data.U);
     lamda = cpt_lamda(data.T, data.m, K, tol_lamda, data.a, data.b, hl, gl, gu, gamma_h, gamma_g);
     max_1w = cpt_max_1w(data.T, data.m, K, data.b, hl, gamma_h);
+    Lw = cpt_Lw(data.T, data.m, data.eta, data.kappa, data.U);
+    Uw = cpt_Uw(data.T, data.m, data.eta, data.kappa, data.L);
+    Lwlog = cpt_Lwlog(data.T, data.m, data.eta, data.kappa, data.U);
+    Uwlog = cpt_Uwlog(data.T, data.m, data.eta, data.kappa, data.L);
 }
 
 double Param::h_func(vector<vector<double>> eta, vector<vector<double>> kappa, int t, int i, double x) {
+    //negative eta
     double res = exp(eta[t][i] * x + kappa[t][i]);
     return res;
 }
@@ -171,6 +176,62 @@ vector<double> Param::cpt_max_1w(int T, int m, int K, vector<double> b, vector<v
             for (int iter_k = 1; iter_k <= K; iter_k++) {
                 tmp += gamma_h[iter_t][iter_m][iter_k];
             }
+        }
+        res.push_back(tmp);
+    }
+    return res;
+}
+
+vector<vector<double>> Param::cpt_Lw(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> U) {
+    vector<vector<double>> res;
+    for (int iter_t = 0; iter_t < T; iter_t++) {
+        vector<double> tmp;
+
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            //TODO: it must be U[iter_m]
+            tmp.push_back(h_func(eta, kappa, iter_t, iter_m, U[iter_m]));
+
+        }
+        res.push_back(tmp);
+    }
+    return res;
+}
+
+vector<vector<double>> Param::cpt_Uw(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> L) {
+    vector<vector<double>> res;
+    for (int iter_t = 0; iter_t < T; iter_t++) {
+        vector<double> tmp;
+
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            //TODO: it must be L[iter_m]
+            tmp.push_back(h_func(eta, kappa, iter_t, iter_m, L[iter_m]));
+
+        }
+        res.push_back(tmp);
+    }
+    return res;
+}
+
+vector<vector<double>> Param::cpt_Lwlog(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> L) {
+    vector<vector<double>> res;
+    for (int iter_t = 0; iter_t < T; iter_t++) {
+        vector<double> tmp;
+
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            tmp.push_back(eta[iter_t][iter_m] * L[iter_m] + kappa[iter_t][iter_m]);
+        }
+        res.push_back(tmp);
+    }
+    return res;
+}
+
+vector<vector<double>> Param::cpt_Uwlog(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> U) {
+    vector<vector<double>> res;
+    for (int iter_t = 0; iter_t < T; iter_t++) {
+        vector<double> tmp;
+
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            tmp.push_back(eta[iter_t][iter_m] * U[iter_m] + kappa[iter_t][iter_m]);
         }
         res.push_back(tmp);
     }
