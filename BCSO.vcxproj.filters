@@ -45,6 +45,9 @@
     <ClInclude Include="BCBilinearSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BilinearNew.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Data.cpp">
@@ -78,6 +81,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BCBilinearSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BilinearNew.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

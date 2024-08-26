@@ -5,6 +5,7 @@
 #include "BCMISOCPSolver.h"
 #include "BCMILPSolver.h"
 #include "BilinearSolver.h"
+#include "BilinearNew.h"
 #include "BCBilinearSolver.h"
 #include "ApproxByGurobi.h"
 
@@ -55,6 +56,12 @@ int main(int argc, char* argv[]) {
 		string output = "out//bcbilinear//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
 		BCBilinearSolver bcbilinearSolver(data, K, tol_lamda, M);
 		bcbilinearSolver.solve(output, time_limit);
+	}
+
+	if (solver == "binew") {
+		string output = "out//binew//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
+		BilinearNew bilinearNew(data, K, tol_lamda, M);
+		bilinearNew.solve(output, time_limit);
 	}
 
 	if (solver == "pwlGRB") {

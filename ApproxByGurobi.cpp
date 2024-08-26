@@ -134,7 +134,7 @@ void ApproxGurobiSolver::solve(string output, int time_limit) {
     model.setObjective(objective, GRB_MAXIMIZE);
     //model.set(GRB_IntParam_Threads, 8);
     model.set(GRB_DoubleParam_TimeLimit, time_limit);
-    model.set(GRB_DoubleParam_MIPGap, 1e-8);
+    //model.set(GRB_DoubleParam_MIPGap, 1e-8);
     model.set(GRB_IntParam_MIQCPMethod, 1);
     model.set(GRB_IntParam_FuncPieces, 25);
     //model.set(GRB_IntParam_FuncPieces, -1);
