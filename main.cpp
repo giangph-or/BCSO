@@ -4,6 +4,8 @@
 #include "MILPSolver.h"
 #include "BCMISOCPSolver.h"
 #include "BCMILPSolver.h"
+#include "BilinearSolver.h"
+#include "BCBilinearSolver.h"
 #include "ApproxByGurobi.h"
 
 int main(int argc, char* argv[]) {
@@ -41,6 +43,18 @@ int main(int argc, char* argv[]) {
 		string output = "out//bcmilp//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
 		BCMILPSolver bcmilpSolver(data, K, tol_lamda, M);
 		bcmilpSolver.solve(output, time_limit);
+	}
+
+	if (solver == "bilinear") {
+		string output = "out//bilinear//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
+		BilinearSolver bilinearSolver(data, K, tol_lamda, M);
+		bilinearSolver.solve(output, time_limit);
+	}
+
+	if (solver == "bcbilinear") {
+		string output = "out//bcbilinear//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
+		BCBilinearSolver bcbilinearSolver(data, K, tol_lamda, M);
+		bcbilinearSolver.solve(output, time_limit);
 	}
 
 	if (solver == "pwlGRB") {

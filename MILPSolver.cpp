@@ -88,7 +88,7 @@ void MILPSolver::solve(string output,int time_limit) {
                 }
                 sum += sum_gamma * (data.U[iter_m] - data.L[iter_m]) / param.K;
             }
-            model.addConstr(sum == 1);
+            model.addConstr(sum <= 1);
         }
 
         // Constraint z
@@ -134,6 +134,11 @@ void MILPSolver::solve(string output,int time_limit) {
             sumX += x[iter_m] * y[iter_m];
         }
         model.addQConstr(sumX <= data.W);
+
+        // constr y and x
+        for (int iter_m = 0; iter_m < data.m; iter_m++) {
+            model.addConstr(x[iter_m] <= data.U[iter_m] * y[iter_m] + data.L[iter_m]);
+        }
 
         // Constraint McCormick for u
         for (int iter_t = 0; iter_t < data.T; iter_t++) {

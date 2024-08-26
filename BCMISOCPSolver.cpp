@@ -130,7 +130,7 @@ void BCMISOCPSolver::solve(string output, int time_limit) {
 				}
 				sum += sum_gamma * (data.U[iter_m] - data.L[iter_m]) / param.K;
 			}
-			model.addConstr(sum == 1);
+			model.addConstr(sum >= 1);
 		}
 
 		// Constraint theta and w

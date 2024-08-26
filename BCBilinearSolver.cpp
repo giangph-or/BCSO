@@ -1,12 +1,12 @@
-#include "BCMILPSolver.h"
+#include "BCBilinearSolver.h"
 
 using namespace std;
 
-BCMILPSolver::BCMILPSolver() {
+BCBilinearSolver::BCBilinearSolver() {
 
 }
 
-BCMILPSolver::BCMILPSolver(Data data, int K, double tol_lamda, int M) {
+BCBilinearSolver::BCBilinearSolver(Data data, int K, double tol_lamda, int M) {
     this->data = data;
 
     auto start = chrono::steady_clock::now(); //get start time
@@ -25,7 +25,7 @@ BCMILPSolver::BCMILPSolver(Data data, int K, double tol_lamda, int M) {
     time_for_mc = elapsed_seconds.count();
 }
 
-CBMILP::CBMILP(GRBVar* cb_w, GRBVar* cb_y, GRBVar** cb_z, int T, int m, int K, vector<double> b, vector<double> L, vector<double> U, vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h) {
+CBBilinear::CBBilinear(GRBVar* cb_w, GRBVar* cb_y, GRBVar** cb_z, int T, int m, int K, vector<double> b, vector<double> L, vector<double> U, vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h) {
     w = cb_w;
     y = cb_y;
     z = cb_z;
@@ -39,7 +39,7 @@ CBMILP::CBMILP(GRBVar* cb_w, GRBVar* cb_y, GRBVar** cb_z, int T, int m, int K, v
     cb_gamma_h = gamma_h;
 }
 
-void BCMILPSolver::solve(string output, int time_limit) {
+void BCBilinearSolver::solve(string output, int time_limit) {
     try {
         GRBEnv env = GRBEnv(true);
         env.start();
@@ -74,38 +74,20 @@ void BCMILPSolver::solve(string output, int time_limit) {
             x[iter_m] = model.addVar(0.0, GRB_INFINITY, 0.0, GRB_CONTINUOUS);
         }
 
-        // u variables
-        vector<vector<vector<GRBVar>>> u(data.T, vector<vector<GRBVar>>(data.m, vector<GRBVar>(param.K + 1)));
-        for (int iter_t = 0; iter_t < data.T; iter_t++) {
-            for (int iter_m = 0; iter_m < data.m; iter_m++) {
-                for (int iter_k = 0; iter_k <= param.K; iter_k++) {
-                    u[iter_t][iter_m][iter_k] = model.addVar(0.0, GRB_INFINITY, 0.0, GRB_CONTINUOUS);
-                }
-            }
-        }
-
-        // v variables
-        vector<vector<GRBVar>> v(data.T, vector<GRBVar>(data.m));
-        for (int iter_t = 0; iter_t < data.T; iter_t++) {
-            for (int iter_m = 0; iter_m < data.m; iter_m++) {
-                v[iter_t][iter_m] = model.addVar(0.0, GRB_INFINITY, 0.0, GRB_CONTINUOUS);
-            }
-        }
-
         // Constraint w
         for (int iter_t = 0; iter_t < data.T; iter_t++) {
-            GRBLinExpr sum = data.b[iter_t] * w[iter_t];
+            GRBQuadExpr sum = data.b[iter_t] * w[iter_t];
             for (int iter_m = 0; iter_m < data.m; iter_m++) {
-                sum += param.hl[iter_t][iter_m] * v[iter_t][iter_m];
+                sum += param.hl[iter_t][iter_m] * w[iter_t] * y[iter_m];
             }
             for (int iter_m = 0; iter_m < data.m; iter_m++) {
-                GRBLinExpr sum_gamma = 0;
+                GRBQuadExpr sum_gamma = 0;
                 for (int iter_k = 1; iter_k <= param.K; iter_k++) {
-                    sum_gamma += param.gamma_h[iter_t][iter_m][iter_k] * u[iter_t][iter_m][iter_k];
+                    sum_gamma += param.gamma_h[iter_t][iter_m][iter_k] * w[iter_t] * z[iter_m][iter_k];
                 }
                 sum += sum_gamma * (data.U[iter_m] - data.L[iter_m]) / param.K;
             }
-            model.addConstr(sum <= 1);
+            model.addQConstr(sum <= 1);
         }
 
         // Constraint z
@@ -157,39 +139,39 @@ void BCMILPSolver::solve(string output, int time_limit) {
             model.addConstr(x[iter_m] <= data.U[iter_m] * y[iter_m] + data.L[iter_m]);
         }
 
-        // Constraint McCormick for u
+        // Constraint McCormick for w*z
         for (int iter_t = 0; iter_t < data.T; iter_t++) {
             for (int iter_m = 0; iter_m < data.m; iter_m++) {
                 for (int iter_k = 1; iter_k <= param.K; iter_k++) {
-                    model.addConstr(u[iter_t][iter_m][iter_k] <= mcCormick.ub_w_z_1[iter_t][iter_m][iter_k] * z[iter_m][iter_k]);
-                    model.addConstr(u[iter_t][iter_m][iter_k] >= mcCormick.lb_w_z_1[iter_t][iter_m][iter_k] * z[iter_m][iter_k]);
-                    model.addConstr(u[iter_t][iter_m][iter_k] <= w[iter_t] - mcCormick.lb_w_z_0[iter_t][iter_m][iter_k] * (1 - z[iter_m][iter_k]));
-                    model.addConstr(u[iter_t][iter_m][iter_k] >= w[iter_t] - mcCormick.ub_w_z_0[iter_t][iter_m][iter_k] * (1 - z[iter_m][iter_k]));
+                    model.addQConstr(w[iter_t] * z[iter_m][iter_k] <= mcCormick.ub_w_z_1[iter_t][iter_m][iter_k] * z[iter_m][iter_k]);
+                    model.addQConstr(w[iter_t] * z[iter_m][iter_k] >= mcCormick.lb_w_z_1[iter_t][iter_m][iter_k] * z[iter_m][iter_k]);
+                    model.addQConstr(w[iter_t] * z[iter_m][iter_k] <= w[iter_t] - mcCormick.lb_w_z_0[iter_t][iter_m][iter_k] * (1 - z[iter_m][iter_k]));
+                    model.addQConstr(w[iter_t] * z[iter_m][iter_k] >= w[iter_t] - mcCormick.ub_w_z_0[iter_t][iter_m][iter_k] * (1 - z[iter_m][iter_k]));
                 }
             }
         }
 
-        // Constraint McCormick for v
+        // Constraint McCormick for w*y
         for (int iter_t = 0; iter_t < data.T; iter_t++) {
             for (int iter_m = 0; iter_m < data.m; iter_m++) {
-                model.addConstr(v[iter_t][iter_m] <= mcCormick.ub_w_y_1[iter_t][iter_m] * y[iter_m]);
-                model.addConstr(v[iter_t][iter_m] >= mcCormick.lb_w_y_1[iter_t][iter_m] * y[iter_m]);
-                model.addConstr(v[iter_t][iter_m] <= w[iter_t] - mcCormick.lb_w_y_0[iter_t][iter_m] * (1 - y[iter_m]));
-                model.addConstr(v[iter_t][iter_m] >= w[iter_t] - mcCormick.ub_w_y_0[iter_t][iter_m] * (1 - y[iter_m]));
+                model.addQConstr(w[iter_t] * y[iter_m] <= mcCormick.ub_w_y_1[iter_t][iter_m] * y[iter_m]);
+                model.addQConstr(w[iter_t] * y[iter_m] >= mcCormick.lb_w_y_1[iter_t][iter_m] * y[iter_m]);
+                model.addQConstr(w[iter_t] * y[iter_m] <= w[iter_t] - mcCormick.lb_w_y_0[iter_t][iter_m] * (1 - y[iter_m]));
+                model.addQConstr(w[iter_t] * y[iter_m] >= w[iter_t] - mcCormick.ub_w_y_0[iter_t][iter_m] * (1 - y[iter_m]));
             }
         }
 
         // Objective function
-        GRBLinExpr obj = 0;
+        GRBQuadExpr obj = 0;
         for (int iter_t = 0; iter_t < data.T; iter_t++) {
             obj += data.a[iter_t] * w[iter_t];
             for (int iter_m = 0; iter_m < data.m; iter_m++) {
-                obj += v[iter_t][iter_m] * param.gl[iter_t][iter_m];
+                obj += w[iter_t] * y[iter_m] * param.gl[iter_t][iter_m];
             }
             for (int iter_m = 0; iter_m < data.m; iter_m++) {
-                GRBLinExpr obj_gamma = 0;
+                GRBQuadExpr obj_gamma = 0;
                 for (int iter_k = 1; iter_k <= param.K; iter_k++) {
-                    obj_gamma += param.gamma_g[iter_t][iter_m][iter_k] * u[iter_t][iter_m][iter_k];
+                    obj_gamma += param.gamma_g[iter_t][iter_m][iter_k] * w[iter_t] * z[iter_m][iter_k];
                 }
                 obj += obj_gamma * (data.U[iter_m] - data.L[iter_m]) / param.K;
             }
@@ -199,6 +181,7 @@ void BCMILPSolver::solve(string output, int time_limit) {
         // Parameters
         model.set(GRB_DoubleParam_TimeLimit, time_limit);
         model.set(GRB_DoubleParam_MIPGap, 1e-8);
+        model.set(GRB_IntParam_MIQCPMethod, 1);
         model.set(GRB_IntParam_LazyConstraints, 1);
         model.set(GRB_IntParam_PreCrush, 1);
 
@@ -206,7 +189,7 @@ void BCMILPSolver::solve(string output, int time_limit) {
         auto end = chrono::steady_clock::now();
         chrono::duration<double> elapsed_seconds = end - start;
 
-        CBMILP cb = CBMILP(w, y, z, data.T, data.m, param.K, data.b, data.L, data.U, param.hl, param.gamma_h);
+        CBBilinear cb = CBBilinear(w, y, z, data.T, data.m, param.K, data.b, data.L, data.U, param.hl, param.gamma_h);
         model.setCallback(&cb);
 
         model.optimize();
@@ -301,7 +284,7 @@ void BCMILPSolver::solve(string output, int time_limit) {
     }
 }
 
-void CBMILP::callback() {
+void CBBilinear::callback() {
     try {
         if (where == GRB_CB_MIPSOL) {
             double* initial_y = new double[cb_m];
