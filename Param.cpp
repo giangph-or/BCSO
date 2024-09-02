@@ -2,11 +2,11 @@
 
 using namespace std;
 
-Param::Param() {
+ParamAssortment::ParamAssortment() {
 
 }
 
-Param::Param(Param* pParam) {
+ParamAssortment::ParamAssortment(ParamAssortment* pParam) {
     this->hl = pParam->hl;
     this->gl = pParam->gl;
     this->gu = pParam->gu;
@@ -19,7 +19,7 @@ Param::Param(Param* pParam) {
     this->M = pParam->M;
 }
 
-Param::Param(Data data, int K, double tol_lamda, int M) {
+ParamAssortment::ParamAssortment(DataAssortment data, int K, double tol_lamda, int M) {
     this->K = K;
     this->tol_lamda = tol_lamda;
     this->M = M;
@@ -36,18 +36,18 @@ Param::Param(Data data, int K, double tol_lamda, int M) {
     Uwlog = cpt_Uwlog(data.T, data.m, data.eta, data.kappa, data.L);
 }
 
-double Param::h_func(vector<vector<double>> eta, vector<vector<double>> kappa, int t, int i, double x) {
+double ParamAssortment::h_func(vector<vector<double>> eta, vector<vector<double>> kappa, int t, int i, double x) {
     //negative eta
     double res = exp(eta[t][i] * x + kappa[t][i]);
     return res;
 }
 
-double Param::g_func(vector<vector<double>> eta, vector<vector<double>> kappa, int t, int i, double x) {
+double ParamAssortment::g_func(vector<vector<double>> eta, vector<vector<double>> kappa, int t, int i, double x) {
     double res = x * exp(eta[t][i] * x + kappa[t][i]);
     return res;
 }
 
-vector<vector<double>> Param::cpt_hl(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> L) {
+vector<vector<double>> ParamAssortment::cpt_hl(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> L) {
     vector<vector<double>> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
         vector<double> tmp;
@@ -61,7 +61,7 @@ vector<vector<double>> Param::cpt_hl(int T, int m, vector<vector<double>> eta, v
     return res;
 }
 
-vector<vector<double>> Param::cpt_gl(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> L) {
+vector<vector<double>> ParamAssortment::cpt_gl(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> L) {
     vector<vector<double>> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
         vector<double> tmp;
@@ -75,7 +75,7 @@ vector<vector<double>> Param::cpt_gl(int T, int m, vector<vector<double>> eta, v
     return res;
 }
 
-vector<vector<double>> Param::cpt_gu(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> U) {
+vector<vector<double>> ParamAssortment::cpt_gu(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> U) {
     vector<vector<double>> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
         vector<double> tmp;
@@ -89,7 +89,7 @@ vector<vector<double>> Param::cpt_gu(int T, int m, vector<vector<double>> eta, v
     return res;
 }
 
-vector<vector<vector<double>>> Param::cpt_gamma_h(int T, int m, int K, vector<vector<double>> eta, vector<vector<double>> kappa,
+vector<vector<vector<double>>> ParamAssortment::cpt_gamma_h(int T, int m, int K, vector<vector<double>> eta, vector<vector<double>> kappa,
     vector<double> L, vector<double> U) {
     vector<vector<vector<double>>> res;
 
@@ -112,7 +112,7 @@ vector<vector<vector<double>>> Param::cpt_gamma_h(int T, int m, int K, vector<ve
     return res;
 }
 
-vector<vector<vector<double>>> Param::cpt_gamma_g(int T, int m, int K, vector<vector<double>> eta, vector<vector<double>> kappa,
+vector<vector<vector<double>>> ParamAssortment::cpt_gamma_g(int T, int m, int K, vector<vector<double>> eta, vector<vector<double>> kappa,
     vector<double> L, vector<double> U) {
     vector<vector<vector<double>>> res;
 
@@ -135,7 +135,7 @@ vector<vector<vector<double>>> Param::cpt_gamma_g(int T, int m, int K, vector<ve
     return res;
 }
 
-vector<double> Param::cpt_lamda(int T, int m, int K, double tol, vector<double> a, vector<double> b, vector<vector<double>> hl,
+vector<double> ParamAssortment::cpt_lamda(int T, int m, int K, double tol, vector<double> a, vector<double> b, vector<vector<double>> hl,
     vector<vector<double>> gl, vector<vector<double>> gu, vector<vector<vector<double>>> gamma_h,
     vector<vector<vector<double>>> gamma_g) {
     vector<double> res;
@@ -166,7 +166,7 @@ vector<double> Param::cpt_lamda(int T, int m, int K, double tol, vector<double> 
     return res;
 }
 
-vector<double> Param::cpt_max_1w(int T, int m, int K, vector<double> b, vector<vector<double>> hl,
+vector<double> ParamAssortment::cpt_max_1w(int T, int m, int K, vector<double> b, vector<vector<double>> hl,
     vector<vector<vector<double>>> gamma_h) {
     vector<double> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
@@ -182,7 +182,7 @@ vector<double> Param::cpt_max_1w(int T, int m, int K, vector<double> b, vector<v
     return res;
 }
 
-vector<vector<double>> Param::cpt_Lw(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> U) {
+vector<vector<double>> ParamAssortment::cpt_Lw(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> U) {
     vector<vector<double>> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
         vector<double> tmp;
@@ -197,7 +197,7 @@ vector<vector<double>> Param::cpt_Lw(int T, int m, vector<vector<double>> eta, v
     return res;
 }
 
-vector<vector<double>> Param::cpt_Uw(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> L) {
+vector<vector<double>> ParamAssortment::cpt_Uw(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> L) {
     vector<vector<double>> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
         vector<double> tmp;
@@ -212,7 +212,7 @@ vector<vector<double>> Param::cpt_Uw(int T, int m, vector<vector<double>> eta, v
     return res;
 }
 
-vector<vector<double>> Param::cpt_Lwlog(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> L) {
+vector<vector<double>> ParamAssortment::cpt_Lwlog(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> L) {
     vector<vector<double>> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
         vector<double> tmp;
@@ -225,7 +225,7 @@ vector<vector<double>> Param::cpt_Lwlog(int T, int m, vector<vector<double>> eta
     return res;
 }
 
-vector<vector<double>> Param::cpt_Uwlog(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> U) {
+vector<vector<double>> ParamAssortment::cpt_Uwlog(int T, int m, vector<vector<double>> eta, vector<vector<double>> kappa, vector<double> U) {
     vector<vector<double>> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
         vector<double> tmp;

@@ -1,29 +1,29 @@
 #include "BCMISOCPSolver.h"
 
-BCMISOCPSolver::BCMISOCPSolver() {
+BCMISOCPSolverAssortment::BCMISOCPSolverAssortment() {
 
 }
 
-BCMISOCPSolver::BCMISOCPSolver(Data data, int K, double tol_lamda, int M) {
+BCMISOCPSolverAssortment::BCMISOCPSolverAssortment(DataAssortment data, int K, double tol_lamda, int M) {
 	this->data = data;
 
 	auto start = chrono::steady_clock::now(); //get start time
 	auto end = chrono::steady_clock::now();
 	chrono::duration<double> elapsed_seconds = end - start;
 
-	param = Param(data, K, tol_lamda, M);
+	param = ParamAssortment(data, K, tol_lamda, M);
 	end = std::chrono::steady_clock::now();
 	elapsed_seconds = end - start;
 	time_for_param = elapsed_seconds.count();
 
 	start = chrono::steady_clock::now(); //get start time
-	mcCormick = McCormick(data, param, true);
+	mcCormick = McCormickAssortment(data, param, true);
 	end = std::chrono::steady_clock::now();
 	elapsed_seconds = end - start;
 	time_for_mc = elapsed_seconds.count();
 }
 
-CBMISOCP::CBMISOCP(GRBVar* cb_w, GRBVar* cb_y, GRBVar** cb_z, int T, int m, int K, vector<double> b, vector<double> L, vector<double> U, vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h) {
+CBMISOCPAssortment::CBMISOCPAssortment(GRBVar* cb_w, GRBVar* cb_y, GRBVar** cb_z, int T, int m, int K, vector<double> b, vector<double> L, vector<double> U, vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h) {
 	w = cb_w;
 	y = cb_y;
 	z = cb_z;
@@ -37,7 +37,7 @@ CBMISOCP::CBMISOCP(GRBVar* cb_w, GRBVar* cb_y, GRBVar** cb_z, int T, int m, int 
 	cb_gamma_h = gamma_h;
 }
 
-void BCMISOCPSolver::solve(string output, int time_limit) {
+void BCMISOCPSolverAssortment::solve(string output, int time_limit) {
 	try {
 		// Create an environment
 		GRBEnv env = GRBEnv(true);
@@ -198,10 +198,10 @@ void BCMISOCPSolver::solve(string output, int time_limit) {
 		}
 		model.addQConstr(sumX <= data.W);
 
-		// constr y and x
-		for (int iter_m = 0; iter_m < data.m; iter_m++) {
-			model.addConstr(x[iter_m] <= data.U[iter_m] * y[iter_m] + data.L[iter_m]);
-		}
+		//// constr y and x
+		//for (int iter_m = 0; iter_m < data.m; iter_m++) {
+		//	model.addConstr(x[iter_m] <= data.U[iter_m] * y[iter_m] + data.L[iter_m]);
+		//}
 
 		// Constraint McCormick for u
 		for (int iter_t = 0; iter_t < data.T; iter_t++) {
@@ -254,7 +254,7 @@ void BCMISOCPSolver::solve(string output, int time_limit) {
 		model.setObjective(obj, GRB_MINIMIZE);
 
 		model.set(GRB_DoubleParam_TimeLimit, time_limit);
-		model.set(GRB_DoubleParam_MIPGap, 1e-8);
+		//model.set(GRB_DoubleParam_MIPGap, 1e-8);
 		model.set(GRB_IntParam_MIQCPMethod, 1);
 		model.set(GRB_IntParam_LazyConstraints, 1);
 		model.set(GRB_IntParam_PreCrush, 1);
@@ -264,7 +264,7 @@ void BCMISOCPSolver::solve(string output, int time_limit) {
 		auto end = chrono::steady_clock::now();
 		chrono::duration<double> elapsed_seconds = end - start;
 
-		CBMISOCP cb = CBMISOCP(w, y, z, data.T, data.m, param.K, data.b, data.L, data.U, param.hl, param.gamma_h);
+		CBMISOCPAssortment cb = CBMISOCPAssortment(w, y, z, data.T, data.m, param.K, data.b, data.L, data.U, param.hl, param.gamma_h);
 		model.setCallback(&cb);
 
 		model.optimize();
@@ -352,7 +352,7 @@ void BCMISOCPSolver::solve(string output, int time_limit) {
 	}
 }
 
-void CBMISOCP::callback() {
+void CBMISOCPAssortment::callback() {
 	try {
 		if (where == GRB_CB_MIPSOL) {
 			double* initial_y = new double[cb_m];

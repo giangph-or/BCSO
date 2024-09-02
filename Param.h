@@ -8,7 +8,7 @@
 
 
 using namespace std;
-class Param {
+class ParamAssortment {
 public:
     vector<vector<double>> hl;
     vector<vector<double>> gl;
@@ -25,11 +25,11 @@ public:
     vector<vector<double>> Lwlog;
     vector<vector<double>> Uwlog;
 
-    Param();
+    ParamAssortment();
 
-    Param(Param* pParam);
+    ParamAssortment(ParamAssortment* pParam);
 
-    Param(Data data, int K, double tol_lamda, int M);
+    ParamAssortment(DataAssortment data, int K, double tol_lamda, int M);
 
     double h_func(vector<vector<double>> eta, vector<vector<double>> kappa, int t, int i, double x);
 

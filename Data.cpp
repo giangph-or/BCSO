@@ -1,10 +1,10 @@
 #include "Data.h"
 
-Data::Data() {
+DataAssortment::DataAssortment() {
 
 }
 
-void Data::read_data(string data_path) {
+void DataAssortment::read_data(string data_path) {
     fstream input;
     input.open(data_path);
     input >> T >> m >> W;

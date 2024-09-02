@@ -10,11 +10,11 @@
 
 using namespace std;
 
-class MISOCPSolver {
+class MISOCPSolverAssortment {
 public:
-    Data data;
-    Param param;
-    McCormick mcCormick;
+    DataAssortment data;
+    ParamAssortment param;
+    McCormickAssortment mcCormick;
     double time_for_param = 0;
     double time_for_mc = 0;
     double time_for_solve = 0;
@@ -22,9 +22,9 @@ public:
     double obj_val_cplex = 0;
     double obj_val_true = 0;
 
-    MISOCPSolver();
+    MISOCPSolverAssortment();
 
-    MISOCPSolver(Data data, int K, double tol_lamda, int M);
+    MISOCPSolverAssortment(DataAssortment data, int K, double tol_lamda, int M);
 
     void solve(string output, int time_limit);
 };

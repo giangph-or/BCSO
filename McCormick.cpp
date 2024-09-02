@@ -1,10 +1,10 @@
 #include "McCormick.h"
 
-McCormick::McCormick() {
+McCormickAssortment::McCormickAssortment() {
 
 }
 
-McCormick::McCormick(Data data, Param param, bool exist_y) {
+McCormickAssortment::McCormickAssortment(DataAssortment data, ParamAssortment param, bool exist_y) {
     lb_w_z_1 = cpt_lb_w_z_1(data.T, data.m, data.W, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h, param.max_1w);
     lb_w_z_0 = cpt_lb_w_z_0(data.T, data.m, data.W, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h, param.max_1w);
     ub_w_z_1 = cpt_ub_w_z_1(data.T, data.m, data.W, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h);
@@ -18,7 +18,7 @@ McCormick::McCormick(Data data, Param param, bool exist_y) {
     }
 }
 
-bool McCormick::max_1w_y_1(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormickAssortment::max_1w_y_1(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -119,7 +119,7 @@ bool McCormick::max_1w_y_1(int m, int K, double W, int M, int i, double b_t, vec
     }
 }
 
-bool McCormick::max_1w_y_0(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormickAssortment::max_1w_y_0(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -220,7 +220,7 @@ bool McCormick::max_1w_y_0(int m, int K, double W, int M, int i, double b_t, vec
     }
 }
 
-bool McCormick::max_1w_z_1(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormickAssortment::max_1w_z_1(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -322,7 +322,7 @@ bool McCormick::max_1w_z_1(int m, int K, double W, int M, int i, int k, double b
     }
 }
 
-bool McCormick::max_1w_z_0(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormickAssortment::max_1w_z_0(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -423,7 +423,7 @@ bool McCormick::max_1w_z_0(int m, int K, double W, int M, int i, int k, double b
     }
 }
 
-vector<vector<double>> McCormick::cpt_lb_w_y_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
+vector<vector<double>> McCormickAssortment::cpt_lb_w_y_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
     vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h,
     vector<double> max_1w) {
     vector<vector<double>> res;
@@ -444,7 +444,7 @@ vector<vector<double>> McCormick::cpt_lb_w_y_1(int T, int m, double W, int K, in
     return res;
 }
 
-vector<vector<double>> McCormick::cpt_lb_w_y_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
+vector<vector<double>> McCormickAssortment::cpt_lb_w_y_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
     vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h,
     vector<double> max_1w) {
     vector<vector<double>> res;
@@ -465,7 +465,7 @@ vector<vector<double>> McCormick::cpt_lb_w_y_0(int T, int m, double W, int K, in
     return res;
 }
 
-vector<vector<vector<double>>> McCormick::cpt_lb_w_z_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
+vector<vector<vector<double>>> McCormickAssortment::cpt_lb_w_z_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
     vector<double> U, vector<vector<double>> hl,
     vector<vector<vector<double>>> gamma_h, vector<double> max_1w) {
     vector<vector<vector<double>>> res;
@@ -491,7 +491,7 @@ vector<vector<vector<double>>> McCormick::cpt_lb_w_z_1(int T, int m, double W, i
     return res;
 }
 
-vector<vector<vector<double>>> McCormick::cpt_lb_w_z_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
+vector<vector<vector<double>>> McCormickAssortment::cpt_lb_w_z_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
     vector<double> U, vector<vector<double>> hl,
     vector<vector<vector<double>>> gamma_h, vector<double> max_1w) {
     vector<vector<vector<double>>> res;
@@ -517,7 +517,7 @@ vector<vector<vector<double>>> McCormick::cpt_lb_w_z_0(int T, int m, double W, i
     return res;
 }
 
-bool McCormick::min_1w_y_1(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormickAssortment::min_1w_y_1(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -618,7 +618,7 @@ bool McCormick::min_1w_y_1(int m, int K, double W, int M, int i, double b_t, vec
     }
 }
 
-bool McCormick::min_1w_y_0(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormickAssortment::min_1w_y_0(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -719,7 +719,7 @@ bool McCormick::min_1w_y_0(int m, int K, double W, int M, int i, double b_t, vec
     }
 }
 
-bool McCormick::min_1w_z_1(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormickAssortment::min_1w_z_1(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -821,7 +821,7 @@ bool McCormick::min_1w_z_1(int m, int K, double W, int M, int i, int k, double b
     }
 }
 
-bool McCormick::min_1w_z_0(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormickAssortment::min_1w_z_0(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -923,7 +923,7 @@ bool McCormick::min_1w_z_0(int m, int K, double W, int M, int i, int k, double b
     }
 }
 
-vector<vector<double>> McCormick::cpt_ub_w_y_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
+vector<vector<double>> McCormickAssortment::cpt_ub_w_y_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
     vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h) {
     vector<vector<double>> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
@@ -943,7 +943,7 @@ vector<vector<double>> McCormick::cpt_ub_w_y_1(int T, int m, double W, int K, in
     return res;
 }
 
-vector<vector<double>> McCormick::cpt_ub_w_y_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
+vector<vector<double>> McCormickAssortment::cpt_ub_w_y_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
     vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h) {
     vector<vector<double>> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
@@ -963,7 +963,7 @@ vector<vector<double>> McCormick::cpt_ub_w_y_0(int T, int m, double W, int K, in
     return res;
 }
 
-vector<vector<vector<double>>> McCormick::cpt_ub_w_z_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
+vector<vector<vector<double>>> McCormickAssortment::cpt_ub_w_z_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
     vector<double> U, vector<vector<double>> hl,
     vector<vector<vector<double>>> gamma_h) {
     vector<vector<vector<double>>> res;
@@ -989,7 +989,7 @@ vector<vector<vector<double>>> McCormick::cpt_ub_w_z_1(int T, int m, double W, i
     return res;
 }
 
-vector<vector<vector<double>>> McCormick::cpt_ub_w_z_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
+vector<vector<vector<double>>> McCormickAssortment::cpt_ub_w_z_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
     vector<double> U, vector<vector<double>> hl,
     vector<vector<vector<double>>> gamma_h) {
     vector<vector<vector<double>>> res;

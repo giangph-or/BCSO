@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class McCormick {
+class McCormickAssortment {
 public:
     vector<vector<double>> lb_w_y_1;
     vector<vector<double>> lb_w_y_0;
@@ -18,9 +18,9 @@ public:
     vector<vector<vector<double>>> ub_w_z_1;
     vector<vector<vector<double>>> ub_w_z_0;
 
-    McCormick();
+    McCormickAssortment();
 
-    McCormick(Data data, Param param, bool exist_y);
+    McCormickAssortment(DataAssortment data, ParamAssortment param, bool exist_y);
 
     bool max_1w_y_1(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
         vector<vector<double>> gamma_h_t, double& res);

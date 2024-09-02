@@ -10,7 +10,7 @@
 
 using namespace std;
 
-class CBBilinear : public GRBCallback {
+class CBBilinearAssortment : public GRBCallback {
 public:
     int cb_T;
     int cb_m;
@@ -23,16 +23,16 @@ public:
     GRBVar* w;
     GRBVar* y;
     GRBVar** z;
-    CBBilinear(GRBVar* w, GRBVar* y, GRBVar** z, int T, int m, int K, vector<double> b, vector<double> L, vector<double> U, vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h);
+    CBBilinearAssortment(GRBVar* w, GRBVar* y, GRBVar** z, int T, int m, int K, vector<double> b, vector<double> L, vector<double> U, vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h);
 protected:
     void callback();
 };
 
-class BCBilinearSolver {
+class BCBilinearSolverAssortment {
 public:
-    Data data;
-    Param param;
-    McCormick mcCormick;
+    DataAssortment data;
+    ParamAssortment param;
+    McCormickAssortment mcCormick;
     double time_for_param = 0;
     double time_for_mc = 0;
     double time_for_solve = 0;
@@ -41,9 +41,9 @@ public:
     double obj_val_true = 0;
 
 
-    BCBilinearSolver();
+    BCBilinearSolverAssortment();
 
-    BCBilinearSolver(Data data, int K, double tol_lamda, int M);
+    BCBilinearSolverAssortment(DataAssortment data, int K, double tol_lamda, int M);
 
     void solve(string output, int time_limit);
 };

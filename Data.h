@@ -6,10 +6,11 @@
 
 using namespace std;
 
-class Data {
+class DataAssortment {
 public:
-    int T;
-    int m;
+    //Assortment + Price
+    int T;//#customers
+    int m;//#products
     double W;
     vector<double> a;
     vector<double> b;
@@ -17,7 +18,24 @@ public:
     vector<vector<double>> kappa;
     vector<double> L;
     vector<double> U;
-    Data();
+
+    DataAssortment();
+    void read_data(string data_path);
+};
+
+class DataFacility {
+public:
+    //Facility Location + Cost
+    int T;//#zones
+    int m;//#locations
+    double W;
+    vector<vector<double>> a;
+    vector<vector<double>> b;
+    vector<double> L;
+    vector<double> U;
+    vector<double> q;
+
+    DataFacility();
     void read_data(string data_path);
 };
 #pragma once
