@@ -1,10 +1,10 @@
 #include "McCormick.h"
 
-McCormickAssortment::McCormickAssortment() {
+McCormick::McCormick() {
 
 }
 
-McCormickAssortment::McCormickAssortment(DataAssortment data, ParamAssortment param, bool exist_y) {
+McCormick::McCormick(DataAssortment data, ParamAssortment param, bool exist_y) {
     lb_w_z_1 = cpt_lb_w_z_1(data.T, data.m, data.W, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h, param.max_1w);
     lb_w_z_0 = cpt_lb_w_z_0(data.T, data.m, data.W, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h, param.max_1w);
     ub_w_z_1 = cpt_ub_w_z_1(data.T, data.m, data.W, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h);
@@ -18,7 +18,21 @@ McCormickAssortment::McCormickAssortment(DataAssortment data, ParamAssortment pa
     }
 }
 
-bool McCormickAssortment::max_1w_y_1(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+McCormick::McCormick(DataFacility data, ParamFacility param, bool exist_y) {
+    lb_w_z_1 = cpt_lb_w_z_1(data.T, data.m, data.C, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h, param.max_1w);
+    lb_w_z_0 = cpt_lb_w_z_0(data.T, data.m, data.C, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h, param.max_1w);
+    ub_w_z_1 = cpt_ub_w_z_1(data.T, data.m, data.C, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h);
+    ub_w_z_0 = cpt_ub_w_z_0(data.T, data.m, data.C, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h);
+
+    if (exist_y) {
+        lb_w_y_1 = cpt_lb_w_y_1(data.T, data.m, data.C, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h, param.max_1w);
+        lb_w_y_0 = cpt_lb_w_y_0(data.T, data.m, data.C, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h, param.max_1w);
+        ub_w_y_1 = cpt_ub_w_y_1(data.T, data.m, data.C, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h);
+        ub_w_y_0 = cpt_ub_w_y_0(data.T, data.m, data.C, param.K, param.M, data.b, data.L, data.U, param.hl, param.gamma_h);
+    }
+}
+
+bool McCormick::max_1w_y_1(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -77,11 +91,11 @@ bool McCormickAssortment::max_1w_y_1(int m, int K, double W, int M, int i, doubl
         model.addConstr(sumY <= M);
 
         // Constraint sum_X <= W
-        GRBLinExpr sumX = 0;
+        GRBQuadExpr sumX = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumX += x[iter_m] * y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addQConstr(sumX <= W);
 
         // Constraint y_i = 1
         model.addConstr(y[i] == 1);
@@ -103,6 +117,7 @@ bool McCormickAssortment::max_1w_y_1(int m, int K, double W, int M, int i, doubl
         model.setObjective(obj, GRB_MAXIMIZE);
         model.set(GRB_DoubleParam_TimeLimit, 60.0);
         model.set(GRB_IntParam_OutputFlag, 0);
+        model.set(GRB_IntParam_MIQCPMethod, 1);
 
         bool check = false;
         model.optimize();
@@ -119,7 +134,7 @@ bool McCormickAssortment::max_1w_y_1(int m, int K, double W, int M, int i, doubl
     }
 }
 
-bool McCormickAssortment::max_1w_y_0(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormick::max_1w_y_0(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -178,11 +193,11 @@ bool McCormickAssortment::max_1w_y_0(int m, int K, double W, int M, int i, doubl
         model.addConstr(sumY <= M);
 
         // Constraint sum_X <= W
-        GRBLinExpr sumX = 0;
+        GRBQuadExpr sumX = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumX += x[iter_m] * y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addQConstr(sumX <= W);
 
         // Constraint y_i = 1
         model.addConstr(y[i] == 0);
@@ -205,6 +220,7 @@ bool McCormickAssortment::max_1w_y_0(int m, int K, double W, int M, int i, doubl
 
         model.set(GRB_DoubleParam_TimeLimit, 60.0);
         model.set(GRB_IntParam_OutputFlag, 0);
+        model.set(GRB_IntParam_MIQCPMethod, 1);
         bool check = false;
         model.optimize();
 
@@ -220,7 +236,7 @@ bool McCormickAssortment::max_1w_y_0(int m, int K, double W, int M, int i, doubl
     }
 }
 
-bool McCormickAssortment::max_1w_z_1(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormick::max_1w_z_1(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -279,11 +295,11 @@ bool McCormickAssortment::max_1w_z_1(int m, int K, double W, int M, int i, int k
         model.addConstr(sumY <= M);
 
         // Constraint sum_X <= W
-        GRBLinExpr sumX = 0;
+        GRBQuadExpr sumX = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumX += x[iter_m] * y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addQConstr(sumX <= W);
 
         // Constraint z_ik = 1
         model.addConstr(z[i][k] == 1);
@@ -305,7 +321,7 @@ bool McCormickAssortment::max_1w_z_1(int m, int K, double W, int M, int i, int k
         model.setObjective(obj, GRB_MAXIMIZE);
         model.set(GRB_DoubleParam_TimeLimit, 60.0);
         model.set(GRB_IntParam_OutputFlag, 0);
-
+        model.set(GRB_IntParam_MIQCPMethod, 1);
 
         bool check = false;
         model.optimize();
@@ -322,7 +338,7 @@ bool McCormickAssortment::max_1w_z_1(int m, int K, double W, int M, int i, int k
     }
 }
 
-bool McCormickAssortment::max_1w_z_0(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormick::max_1w_z_0(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -381,11 +397,11 @@ bool McCormickAssortment::max_1w_z_0(int m, int K, double W, int M, int i, int k
         model.addConstr(sumY <= M);
 
         // Constraint sum_X <= W
-        GRBLinExpr sumX = 0;
+        GRBQuadExpr sumX = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumX += x[iter_m] * y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addQConstr(sumX <= W);
 
         // Constraint z_ik = 1
         model.addConstr(z[i][k] == 0);
@@ -407,6 +423,7 @@ bool McCormickAssortment::max_1w_z_0(int m, int K, double W, int M, int i, int k
         model.setObjective(obj, GRB_MAXIMIZE);
         model.set(GRB_DoubleParam_TimeLimit, 60.0);
         model.set(GRB_IntParam_OutputFlag, 0);
+        model.set(GRB_IntParam_MIQCPMethod, 1);
 
         bool check = false;
         model.optimize();
@@ -423,7 +440,7 @@ bool McCormickAssortment::max_1w_z_0(int m, int K, double W, int M, int i, int k
     }
 }
 
-vector<vector<double>> McCormickAssortment::cpt_lb_w_y_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
+vector<vector<double>> McCormick::cpt_lb_w_y_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
     vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h,
     vector<double> max_1w) {
     vector<vector<double>> res;
@@ -444,7 +461,7 @@ vector<vector<double>> McCormickAssortment::cpt_lb_w_y_1(int T, int m, double W,
     return res;
 }
 
-vector<vector<double>> McCormickAssortment::cpt_lb_w_y_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
+vector<vector<double>> McCormick::cpt_lb_w_y_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
     vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h,
     vector<double> max_1w) {
     vector<vector<double>> res;
@@ -465,7 +482,7 @@ vector<vector<double>> McCormickAssortment::cpt_lb_w_y_0(int T, int m, double W,
     return res;
 }
 
-vector<vector<vector<double>>> McCormickAssortment::cpt_lb_w_z_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
+vector<vector<vector<double>>> McCormick::cpt_lb_w_z_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
     vector<double> U, vector<vector<double>> hl,
     vector<vector<vector<double>>> gamma_h, vector<double> max_1w) {
     vector<vector<vector<double>>> res;
@@ -491,7 +508,7 @@ vector<vector<vector<double>>> McCormickAssortment::cpt_lb_w_z_1(int T, int m, d
     return res;
 }
 
-vector<vector<vector<double>>> McCormickAssortment::cpt_lb_w_z_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
+vector<vector<vector<double>>> McCormick::cpt_lb_w_z_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
     vector<double> U, vector<vector<double>> hl,
     vector<vector<vector<double>>> gamma_h, vector<double> max_1w) {
     vector<vector<vector<double>>> res;
@@ -517,7 +534,7 @@ vector<vector<vector<double>>> McCormickAssortment::cpt_lb_w_z_0(int T, int m, d
     return res;
 }
 
-bool McCormickAssortment::min_1w_y_1(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormick::min_1w_y_1(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -576,11 +593,11 @@ bool McCormickAssortment::min_1w_y_1(int m, int K, double W, int M, int i, doubl
         model.addConstr(sumY <= M);
 
         // Constraint sum_X <= W
-        GRBLinExpr sumX = 0;
+        GRBQuadExpr sumX = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumX += x[iter_m] * y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addQConstr(sumX <= W);
 
         // Constraint y_i = 1
         model.addConstr(y[i] == 1);
@@ -602,6 +619,7 @@ bool McCormickAssortment::min_1w_y_1(int m, int K, double W, int M, int i, doubl
         model.setObjective(obj, GRB_MINIMIZE);
         model.set(GRB_DoubleParam_TimeLimit, 60.0);
         model.set(GRB_IntParam_OutputFlag, 0);
+        model.set(GRB_IntParam_MIQCPMethod, 1);
 
         bool check = false;
         model.optimize();
@@ -618,7 +636,7 @@ bool McCormickAssortment::min_1w_y_1(int m, int K, double W, int M, int i, doubl
     }
 }
 
-bool McCormickAssortment::min_1w_y_0(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormick::min_1w_y_0(int m, int K, double W, int M, int i, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -677,11 +695,11 @@ bool McCormickAssortment::min_1w_y_0(int m, int K, double W, int M, int i, doubl
         model.addConstr(sumY <= M);
 
         // Constraint sum_X <= W
-        GRBLinExpr sumX = 0;
+        GRBQuadExpr sumX = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumX += x[iter_m] * y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addQConstr(sumX <= W);
 
         // Constraint y_i = 1
         model.addConstr(y[i] == 0);
@@ -703,6 +721,7 @@ bool McCormickAssortment::min_1w_y_0(int m, int K, double W, int M, int i, doubl
         model.setObjective(obj, GRB_MINIMIZE);
         model.set(GRB_DoubleParam_TimeLimit, 60.0);
         model.set(GRB_IntParam_OutputFlag, 0);
+        model.set(GRB_IntParam_MIQCPMethod, 1);
 
         bool check = false;
         model.optimize();
@@ -719,7 +738,7 @@ bool McCormickAssortment::min_1w_y_0(int m, int K, double W, int M, int i, doubl
     }
 }
 
-bool McCormickAssortment::min_1w_z_1(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormick::min_1w_z_1(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -778,11 +797,11 @@ bool McCormickAssortment::min_1w_z_1(int m, int K, double W, int M, int i, int k
         model.addConstr(sumY <= M);
 
         // Constraint sum_X <= W
-        GRBLinExpr sumX = 0;
+        GRBQuadExpr sumX = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumX += x[iter_m] * y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addQConstr(sumX <= W);
 
         // Constraint z[i][k] = 1
         model.addConstr(z[i][k] == 1);
@@ -805,6 +824,7 @@ bool McCormickAssortment::min_1w_z_1(int m, int K, double W, int M, int i, int k
 
         model.set(GRB_DoubleParam_TimeLimit, 60.0);
         model.set(GRB_IntParam_OutputFlag, 0);
+        model.set(GRB_IntParam_MIQCPMethod, 1);
 
         bool check = false;
         model.optimize();
@@ -821,7 +841,7 @@ bool McCormickAssortment::min_1w_z_1(int m, int K, double W, int M, int i, int k
     }
 }
 
-bool McCormickAssortment::min_1w_z_0(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
+bool McCormick::min_1w_z_0(int m, int K, double W, int M, int i, int k, double b_t, vector<double> L, vector<double> U, vector<double> hl_t,
     vector<vector<double>> gamma_h_t, double& res) {
     try {
         GRBEnv env = GRBEnv(true);
@@ -880,11 +900,11 @@ bool McCormickAssortment::min_1w_z_0(int m, int K, double W, int M, int i, int k
         model.addConstr(sumY <= M);
 
         // Constraint sum_X <= W
-        GRBLinExpr sumX = 0;
+        GRBQuadExpr sumX = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumX += x[iter_m] * y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addQConstr(sumX <= W);
 
         // Constraint z[i][k] = 1
         model.addConstr(z[i][k] == 0);
@@ -907,6 +927,7 @@ bool McCormickAssortment::min_1w_z_0(int m, int K, double W, int M, int i, int k
 
         model.set(GRB_DoubleParam_TimeLimit, 60.0);
         model.set(GRB_IntParam_OutputFlag, 0);
+        model.set(GRB_IntParam_MIQCPMethod, 1);
 
         bool check = false;
         model.optimize();
@@ -923,7 +944,7 @@ bool McCormickAssortment::min_1w_z_0(int m, int K, double W, int M, int i, int k
     }
 }
 
-vector<vector<double>> McCormickAssortment::cpt_ub_w_y_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
+vector<vector<double>> McCormick::cpt_ub_w_y_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
     vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h) {
     vector<vector<double>> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
@@ -943,7 +964,7 @@ vector<vector<double>> McCormickAssortment::cpt_ub_w_y_1(int T, int m, double W,
     return res;
 }
 
-vector<vector<double>> McCormickAssortment::cpt_ub_w_y_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
+vector<vector<double>> McCormick::cpt_ub_w_y_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L, vector<double> U,
     vector<vector<double>> hl, vector<vector<vector<double>>> gamma_h) {
     vector<vector<double>> res;
     for (int iter_t = 0; iter_t < T; iter_t++) {
@@ -963,7 +984,7 @@ vector<vector<double>> McCormickAssortment::cpt_ub_w_y_0(int T, int m, double W,
     return res;
 }
 
-vector<vector<vector<double>>> McCormickAssortment::cpt_ub_w_z_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
+vector<vector<vector<double>>> McCormick::cpt_ub_w_z_1(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
     vector<double> U, vector<vector<double>> hl,
     vector<vector<vector<double>>> gamma_h) {
     vector<vector<vector<double>>> res;
@@ -989,7 +1010,7 @@ vector<vector<vector<double>>> McCormickAssortment::cpt_ub_w_z_1(int T, int m, d
     return res;
 }
 
-vector<vector<vector<double>>> McCormickAssortment::cpt_ub_w_z_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
+vector<vector<vector<double>>> McCormick::cpt_ub_w_z_0(int T, int m, double W, int K, int M, vector<double> b, vector<double> L,
     vector<double> U, vector<vector<double>> hl,
     vector<vector<vector<double>>> gamma_h) {
     vector<vector<vector<double>>> res;

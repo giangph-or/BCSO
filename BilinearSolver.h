@@ -14,7 +14,7 @@ class BilinearSolverAssortment {
 public:
     DataAssortment data;
     ParamAssortment param;
-    McCormickAssortment mcCormick;
+    McCormick mcCormick;
     double time_for_param = 0;
     double time_for_mc = 0;
     double time_for_solve = 0;

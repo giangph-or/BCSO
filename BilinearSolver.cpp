@@ -19,7 +19,7 @@ BilinearSolverAssortment::BilinearSolverAssortment(DataAssortment data, int K, d
 	time_for_param = elapsed_seconds.count();
 
 	start = chrono::steady_clock::now(); //get start time
-	mcCormick = McCormickAssortment(data, param, true);
+	mcCormick = McCormick(data, param, true);
 	end = std::chrono::steady_clock::now();
 	elapsed_seconds = end - start;
 	time_for_mc = elapsed_seconds.count();

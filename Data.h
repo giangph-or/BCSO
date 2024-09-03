@@ -28,12 +28,13 @@ public:
     //Facility Location + Cost
     int T;//#zones
     int m;//#locations
-    double W;
-    vector<vector<double>> a;
-    vector<vector<double>> b;
+    double C;//sum y*x <= C
+    vector<double> a;//a=competitors' utilities in (0,1)
+    vector<double> b;//b=1
+    vector<vector<double>> eta;
+    vector<vector<double>> kappa;
     vector<double> L;
     vector<double> U;
-    vector<double> q;
 
     DataFacility();
     void read_data(string data_path);
