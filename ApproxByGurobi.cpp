@@ -256,13 +256,6 @@ void ApproxGurobiSolverFacility::solve(string output, int time_limit) {
 		}
 	}
 
-	vector<vector<GRBVar>> s(data.T);
-	for (int iter_t = 0; iter_t < data.T; iter_t++) {
-		for (int iter_m = 0; iter_m < data.m; iter_m++) {
-			s[iter_t].push_back(model.addVar(0.0, GRB_INFINITY, 0.0, GRB_CONTINUOUS));
-		}
-	}
-
 	// Constraint theta, v, and u
 	for (int iter_t = 0; iter_t < data.T; iter_t++) {
 		model.addQConstr(theta[iter_t] * v[iter_t] <= u[iter_t]);
@@ -276,38 +269,28 @@ void ApproxGurobiSolverFacility::solve(string output, int time_limit) {
 		}
 	}
 
-	// constr v and s
+	// constr v
 	for (int iter_t = 0; iter_t < data.T; iter_t++) {
-		GRBLinExpr sum_s = data.b[iter_t];
+		GRBQuadExpr sum_s = data.b[iter_t];
 		for (int iter_m = 0; iter_m < data.m; iter_m++) {
-			sum_s += s[iter_t][iter_m];
+			sum_s += w[iter_t][iter_m] * y[iter_m];
 		}
-		model.addConstr(v[iter_t] == sum_s);
+		model.addQConstr(v[iter_t] == sum_s);
 	}
 
-	// constr u and s
+	// constr u
 	for (int iter_t = 0; iter_t < data.T; iter_t++) {
-		GRBLinExpr sum_s;
+		GRBQuadExpr sum_s;
 		for (int iter_m = 0; iter_m < data.m; iter_m++) {
-			sum_s += data.a[iter_t] * s[iter_t][iter_m];
+			sum_s += data.a[iter_t] * w[iter_t][iter_m] * y[iter_m];
 		}
-		model.addConstr(sum_s == u[iter_t]);
+		model.addQConstr(sum_s == u[iter_t]);
 	}
 
 	//// constr y and x
 	//for (int iter_m = 0; iter_m < data.m; iter_m++) {
 	//	model.addConstr(x[iter_m] <= data.U[iter_m] * y[iter_m] + data.L[iter_m]);
 	//}
-
-	// constr y and s
-	for (int iter_t = 0; iter_t < data.T; iter_t++) {
-		for (int iter_m = 0; iter_m < data.m; iter_m++) {
-			model.addConstr(param.Lw[iter_t][iter_m] * y[iter_m] <= s[iter_t][iter_m]);
-			model.addConstr(param.Uw[iter_t][iter_m] * y[iter_m] >= s[iter_t][iter_m]);
-			model.addConstr(w[iter_t][iter_m] - param.Lw[iter_t][iter_m] * (1 - y[iter_m]) >= s[iter_t][iter_m]);
-			model.addConstr(w[iter_t][iter_m] - param.Uw[iter_t][iter_m] * (1 - y[iter_m]) <= s[iter_t][iter_m]);
-		}
-	}
 
 	// Constraint Ax + By <= D : sum_Y <= M
 	GRBQuadExpr sum_y;
