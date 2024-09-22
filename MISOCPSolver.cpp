@@ -64,7 +64,7 @@ void MISOCPSolverAssortment::solve(string output, int time_limit) {
 		// x^
 		vector<GRBVar> x;
 		for (int iter_m = 0; iter_m < data.m; iter_m++) {
-			x.push_back(model.addVar(0.0, GRB_INFINITY, 0.0, GRB_CONTINUOUS));
+			x.push_back(model.addVar(data.L[iter_m], data.U[iter_m], 0.0, GRB_CONTINUOUS));
 		}
 
 		// u
@@ -162,26 +162,26 @@ void MISOCPSolverAssortment::solve(string output, int time_limit) {
 			model.addConstr(x[iter_m] == sumZi);
 		}
 
-		// Constraint Ax + By <= D : sum_Y <= M
-		GRBLinExpr sumY = 0;
-		for (int iter_m = 0; iter_m < data.m; iter_m++) {
-			sumY += y[iter_m];
-		}
-		model.addConstr(sumY <= param.M);
+		//// Constraint Ax + By <= D : sum_Y <= M
+		//GRBLinExpr sumY = 0;
+		//for (int iter_m = 0; iter_m < data.m; iter_m++) {
+		//	sumY += y[iter_m];
+		//}
+		//model.addConstr(sumY <= param.M);
 
 		//// Constraint Ax + By <= D : sum_X <= W
-		//GRBLinExpr sumX = 0;
+		//GRBQuadExpr sumX = 0;
 		//for (int iter_m = 0; iter_m < data.m; iter_m++) {
-		//    sumX += x[iter_m];
+		//	sumX += x[iter_m] * y[iter_m];
 		//}
-		//model.addConstr(sumX <= data.W);
+		//model.addQConstr(sumX <= data.W);
 
 		// Constraint Ax + By <= D : sum_X <= W
-		GRBQuadExpr sumX = 0;
+		GRBLinExpr sumX = 0;
 		for (int iter_m = 0; iter_m < data.m; iter_m++) {
-			sumX += x[iter_m] * y[iter_m];
+			sumX += x[iter_m];
 		}
-		model.addQConstr(sumX <= data.W);
+		model.addConstr(sumX <= data.W);
 
 		//// constr y and x
 		//for (int iter_m = 0; iter_m < data.m; iter_m++) {

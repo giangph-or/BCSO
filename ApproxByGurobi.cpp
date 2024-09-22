@@ -108,19 +108,26 @@ void ApproxGurobiSolverAssortment::solve(string output, int time_limit) {
 		}
 	}
 
-	// Constraint Ax + By <= D : sum_Y <= M
-	GRBQuadExpr sum_y;
-	for (int iter_m = 0; iter_m < data.m; iter_m++) {
-		sum_y += y[iter_m];
-	}
-	model.addConstr(sum_y <= param.M);
+	//// Constraint Ax + By <= D : sum_Y <= M
+	//GRBQuadExpr sum_y;
+	//for (int iter_m = 0; iter_m < data.m; iter_m++) {
+	//	sum_y += y[iter_m];
+	//}
+	//model.addConstr(sum_y <= param.M);
 
-	//Constraint Ax + By <= D : sum_X <= W
-	GRBQuadExpr sum_x = 0;
+	////Constraint Ax + By <= D : sum_X <= W
+	//GRBQuadExpr sum_x = 0;
+	//for (int iter_m = 0; iter_m < data.m; iter_m++) {
+	//	sum_x += x[iter_m] * y[iter_m];
+	//}
+	//model.addQConstr(sum_x <= data.W);
+
+	// Constraint Ax + By <= D : sum_X <= W
+	GRBLinExpr sumX = 0;
 	for (int iter_m = 0; iter_m < data.m; iter_m++) {
-		sum_x += x[iter_m] * y[iter_m];
+		sumX += x[iter_m];
 	}
-	model.addQConstr(sum_x <= data.W);
+	model.addConstr(sumX <= data.W);
 
 	GRBLinExpr objective;
 	for (int iter_t = 0; iter_t < data.T; iter_t++) {

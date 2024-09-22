@@ -62,7 +62,7 @@ void BilinearNewAssortment::solve(string output, int time_limit) {
 		// x^ variables
 		vector<GRBVar> x(data.m);
 		for (int iter_m = 0; iter_m < data.m; iter_m++) {
-			x[iter_m] = model.addVar(0.0, GRB_INFINITY, 0.0, GRB_CONTINUOUS);
+			x[iter_m] = model.addVar(data.L[iter_m], data.U[iter_m], 0.0, GRB_CONTINUOUS);
 		}
 
 		// Constraint n
@@ -129,26 +129,26 @@ void BilinearNewAssortment::solve(string output, int time_limit) {
 		//    model.addConstr(x[iter_m] <= data.U[iter_m] * y[iter_m] + data.L[iter_m]);
 		//}
 
-		// Constraint Ax + By <= D : sum_Y <= M
-		GRBLinExpr sumY = 0;
-		for (int iter_m = 0; iter_m < data.m; iter_m++) {
-			sumY += y[iter_m];
-		}
-		model.addConstr(sumY <= param.M);
+		//// Constraint Ax + By <= D : sum_Y <= M
+		//GRBLinExpr sumY = 0;
+		//for (int iter_m = 0; iter_m < data.m; iter_m++) {
+		//	sumY += y[iter_m];
+		//}
+		//model.addConstr(sumY <= param.M);
 
 		//// Constraint Ax + By <= D : sum_X <= W
-		//GRBLinExpr sumX = 0;
+		//GRBQuadExpr sumX = 0;
 		//for (int iter_m = 0; iter_m < data.m; iter_m++) {
-		//    sumX += x[iter_m];
+		//	sumX += x[iter_m] * y[iter_m];
 		//}
-		//model.addConstr(sumX <= data.W);
+		//model.addQConstr(sumX <= data.W);
 
 		// Constraint Ax + By <= D : sum_X <= W
-		GRBQuadExpr sumX = 0;
+		GRBLinExpr sumX = 0;
 		for (int iter_m = 0; iter_m < data.m; iter_m++) {
-			sumX += x[iter_m] * y[iter_m];
+			sumX += x[iter_m];
 		}
-		model.addQConstr(sumX <= data.W);
+		model.addConstr(sumX <= data.W);
 
 		// Objective function
 		GRBLinExpr obj = 0;
@@ -332,7 +332,7 @@ void BilinearNewFacility::solve(string output, int time_limit) {
 			model.addConstr(sum == d[iter_t]);
 		}
 
-		// f=n/d
+		// f=a/d
 		for (int iter_t = 0; iter_t < data.T; iter_t++)
 			model.addQConstr(f[iter_t] * d[iter_t] >= data.a[iter_t]);
 
