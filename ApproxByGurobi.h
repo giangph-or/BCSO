@@ -18,7 +18,7 @@ public:
     double time_for_mc = 0;
     double time_for_solve = 0;
     double gap = 0;
-    double obj_val_cplex = 0;
+    double obj_val_gurobi = 0;
     double obj_val_true = 0;
 
     ApproxGurobiSolverAssortment();
@@ -36,7 +36,7 @@ public:
     double time_for_mc = 0;
     double time_for_solve = 0;
     double gap = 0;
-    double obj_val_cplex = 0;
+    double obj_val_gurobi = 0;
     double obj_val_true = 0;
 
     ApproxGurobiSolverFacility();

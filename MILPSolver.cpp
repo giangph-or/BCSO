@@ -130,18 +130,6 @@ void MILPSolverAssortment::solve(string output, int time_limit) {
 		}
 		model.addQConstr(sumX <= data.W);
 
-		//// Constraint Ax + By <= D : sum_X <= W
-		//GRBLinExpr sumX = 0;
-		//for (int iter_m = 0; iter_m < data.m; iter_m++) {
-		//	sumX += x[iter_m];
-		//}
-		//model.addConstr(sumX <= data.W);
-
-		//// constr y and x
-		//for (int iter_m = 0; iter_m < data.m; iter_m++) {
-		//    model.addConstr(x[iter_m] <= data.U[iter_m] * y[iter_m] + data.L[iter_m]);
-		//}
-
 		// Constraint McCormick for u
 		for (int iter_t = 0; iter_t < data.T; iter_t++) {
 			for (int iter_m = 0; iter_m < data.m; iter_m++) {
@@ -403,24 +391,12 @@ void MILPSolverFacility::solve(string output, int time_limit) {
 		}
 		model.addConstr(sumY <= param.M);
 
-		//// Constraint Ax + By <= D : sum_X <= W
-		//GRBLinExpr sumX = 0;
-		//for (int iter_m = 0; iter_m < data.m; iter_m++) {
-		//    sumX += x[iter_m];
-		//}
-		//model.addConstr(sumX <= data.W);
-
 		// Constraint Ax + By <= D : sum_X <= W
 		GRBQuadExpr sumX = 0;
 		for (int iter_m = 0; iter_m < data.m; iter_m++) {
 			sumX += x[iter_m] * y[iter_m];
 		}
 		model.addQConstr(sumX <= data.C);
-
-		//// constr y and x
-		//for (int iter_m = 0; iter_m < data.m; iter_m++) {
-		//    model.addConstr(x[iter_m] <= data.U[iter_m] * y[iter_m] + data.L[iter_m]);
-		//}
 
 		// Constraint McCormick for u
 		for (int iter_t = 0; iter_t < data.T; iter_t++) {

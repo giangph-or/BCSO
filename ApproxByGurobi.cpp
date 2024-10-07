@@ -108,26 +108,19 @@ void ApproxGurobiSolverAssortment::solve(string output, int time_limit) {
 		}
 	}
 
-	//// Constraint Ax + By <= D : sum_Y <= M
-	//GRBQuadExpr sum_y;
-	//for (int iter_m = 0; iter_m < data.m; iter_m++) {
-	//	sum_y += y[iter_m];
-	//}
-	//model.addConstr(sum_y <= param.M);
-
-	////Constraint Ax + By <= D : sum_X <= W
-	//GRBQuadExpr sum_x = 0;
-	//for (int iter_m = 0; iter_m < data.m; iter_m++) {
-	//	sum_x += x[iter_m] * y[iter_m];
-	//}
-	//model.addQConstr(sum_x <= data.W);
-
-	// Constraint Ax + By <= D : sum_X <= W
-	GRBLinExpr sumX = 0;
+	// Constraint Ax + By <= D : sum_Y <= M
+	GRBQuadExpr sum_y;
 	for (int iter_m = 0; iter_m < data.m; iter_m++) {
-		sumX += x[iter_m];
+		sum_y += y[iter_m];
 	}
-	model.addConstr(sumX <= data.W);
+	model.addConstr(sum_y <= param.M);
+
+	//Constraint Ax + By <= D : sum_X <= W
+	GRBQuadExpr sum_x = 0;
+	for (int iter_m = 0; iter_m < data.m; iter_m++) {
+		sum_x += x[iter_m] * y[iter_m];
+	}
+	model.addQConstr(sum_x <= data.W);
 
 	GRBLinExpr objective;
 	for (int iter_t = 0; iter_t < data.T; iter_t++) {
@@ -155,7 +148,7 @@ void ApproxGurobiSolverAssortment::solve(string output, int time_limit) {
 	cout << "Status: " << model.get(GRB_IntAttr_Status) << endl;
 	cout << "Objective value: " << setprecision(8) << model.get(GRB_DoubleAttr_ObjVal) << endl;
 
-	double obj_val_gurobi = model.get(GRB_DoubleAttr_ObjVal);
+	obj_val_gurobi = model.get(GRB_DoubleAttr_ObjVal);
 
 	//get value x^
 	vector<double> ansX(data.m, 0);
@@ -294,11 +287,6 @@ void ApproxGurobiSolverFacility::solve(string output, int time_limit) {
 		model.addQConstr(sum_s == u[iter_t]);
 	}
 
-	//// constr y and x
-	//for (int iter_m = 0; iter_m < data.m; iter_m++) {
-	//	model.addConstr(x[iter_m] <= data.U[iter_m] * y[iter_m] + data.L[iter_m]);
-	//}
-
 	// Constraint Ax + By <= D : sum_Y <= M
 	GRBQuadExpr sum_y;
 	for (int iter_m = 0; iter_m < data.m; iter_m++) {
@@ -339,7 +327,7 @@ void ApproxGurobiSolverFacility::solve(string output, int time_limit) {
 	cout << "Status: " << model.get(GRB_IntAttr_Status) << endl;
 	cout << "Objective value: " << setprecision(8) << model.get(GRB_DoubleAttr_ObjVal) << endl;
 
-	double obj_val_gurobi = model.get(GRB_DoubleAttr_ObjVal);
+	obj_val_gurobi = model.get(GRB_DoubleAttr_ObjVal);
 
 	//get value x^
 	vector<double> ansX(data.m, 0);
