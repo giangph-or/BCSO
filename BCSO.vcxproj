@@ -142,7 +142,6 @@
     <ClInclude Include="BCMILPSolver.h" />
     <ClInclude Include="BCMISOCPSolver.h" />
     <ClInclude Include="BilinearNew.h" />
-    <ClInclude Include="BilinearSolver.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="McCormick.h" />
     <ClInclude Include="MILPSolver.h" />
@@ -156,7 +155,6 @@
     <ClCompile Include="BCMILPSolver.cpp" />
     <ClCompile Include="BCMISOCPSolver.cpp" />
     <ClCompile Include="BilinearNew.cpp" />
-    <ClCompile Include="BilinearSolver.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="McCormick.cpp" />

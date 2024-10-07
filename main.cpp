@@ -4,7 +4,6 @@
 #include "MILPSolver.h"
 #include "BCMISOCPSolver.h"
 #include "BCMILPSolver.h"
-#include "BilinearSolver.h"
 #include "BilinearNew.h"
 #include "BCBilinearSolver.h"
 #include "ApproxByGurobi.h"
@@ -32,35 +31,11 @@ int main(int argc, char* argv[]) {
 			misocpSolver.solve(output, time_limit);
 		}
 
-		//if (solver == "bcmisocp") {
-		//	string output = "out_AP//bcmisocp//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
-		//	BCMISOCPSolverAssortment bcmisocpSolver(data, K, tol_lamda, M);
-		//	bcmisocpSolver.solve(output, time_limit);
-		//}
-
 		if (solver == "milp") {
 			string output = "out_AP//milp//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
 			MILPSolverAssortment milpSolver(data, K, tol_lamda, M);
 			milpSolver.solve(output, time_limit);
 		}
-
-		//if (solver == "bcmilp") {
-		//	string output = "out_AP//bcmilp//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
-		//	BCMILPSolverAssortment bcmilpSolver(data, K, tol_lamda, M);
-		//	bcmilpSolver.solve(output, time_limit);
-		//}
-
-		if (solver == "bilinear") {
-			string output = "out_AP//bilinear//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
-			BilinearSolverAssortment bilinearSolver(data, K, tol_lamda, M);
-			bilinearSolver.solve(output, time_limit);
-		}
-
-		//if (solver == "bcbilinear") {
-		//	string output = "out_AP//bcbilinear//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
-		//	BCBilinearSolverAssortment bcbilinearSolver(data, K, tol_lamda, M);
-		//	bcbilinearSolver.solve(output, time_limit);
-		//}
 
 		if (solver == "binew") {
 			string output = "out_AP//binew//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";

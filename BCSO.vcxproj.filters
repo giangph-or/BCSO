@@ -39,9 +39,6 @@
     <ClInclude Include="BCMILPSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BilinearSolver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BCBilinearSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,9 +75,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BCMILPSolver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BilinearSolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BCBilinearSolver.cpp">
