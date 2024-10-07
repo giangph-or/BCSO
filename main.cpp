@@ -8,6 +8,7 @@
 #include "BilinearNew.h"
 #include "BCBilinearSolver.h"
 #include "ApproxByGurobi.h"
+#include "ScipSolver.h"
 
 int main(int argc, char* argv[]) {
 	string problem = argv[1];
@@ -71,6 +72,12 @@ int main(int argc, char* argv[]) {
 			string output = "out_AP//pwlGurobi//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
 			ApproxGurobiSolverAssortment approxSolver(data, K, tol_lamda, M);
 			approxSolver.solve(output, time_limit);
+		}
+
+		if (solver == "scip") {
+			string output = "out_AP//scip//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
+			ScipSolverAssortment scipSolver(data, K, tol_lamda, M);
+			scipSolver.solve(output, time_limit);
 		}
 	}
 

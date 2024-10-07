@@ -48,6 +48,9 @@
     <ClInclude Include="BilinearNew.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ScipSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Data.cpp">
@@ -84,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BilinearNew.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScipSolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

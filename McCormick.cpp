@@ -83,26 +83,26 @@ bool McCormick::max_1w_y_1(int m, int K, double W, int M, int i, double b_t, vec
             model.addConstr(x[iter_m] == sumZi);
         }
 
-        //// Constraint sum_Y <= M
-        //GRBLinExpr sumY = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumY += y[iter_m];
-        //}
-        //model.addConstr(sumY <= M);
-
-        //// Constraint sum_X <= W
-        //GRBQuadExpr sumX = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumX += x[iter_m] * y[iter_m];
-        //}
-        //model.addQConstr(sumX <= W);
-
-        // Constraint Ax + By <= D : sum_X <= W
-        GRBLinExpr sumX = 0;
+        // Constraint sum_Y <= M
+        GRBLinExpr sumY = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumY += y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addConstr(sumY <= M);
+
+        // Constraint sum_X <= W
+        GRBQuadExpr sumX = 0;
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            sumX += x[iter_m] * y[iter_m];
+        }
+        model.addQConstr(sumX <= W);
+
+        //// Constraint Ax + By <= D : sum_X <= W
+        //GRBLinExpr sumX = 0;
+        //for (int iter_m = 0; iter_m < m; iter_m++) {
+        //    sumX += x[iter_m];
+        //}
+        //model.addConstr(sumX <= W);
 
         // Constraint y_i = 1
         model.addConstr(y[i] == 1);
@@ -192,26 +192,26 @@ bool McCormick::max_1w_y_0(int m, int K, double W, int M, int i, double b_t, vec
             model.addConstr(x[iter_m] == sumZi);
         }
 
-        //// Constraint sum_Y <= M
-        //GRBLinExpr sumY = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumY += y[iter_m];
-        //}
-        //model.addConstr(sumY <= M);
-
-        //// Constraint sum_X <= W
-        //GRBQuadExpr sumX = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumX += x[iter_m] * y[iter_m];
-        //}
-        //model.addQConstr(sumX <= W);
-
-        // Constraint Ax + By <= D : sum_X <= W
-        GRBLinExpr sumX = 0;
+        // Constraint sum_Y <= M
+        GRBLinExpr sumY = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumY += y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addConstr(sumY <= M);
+
+        // Constraint sum_X <= W
+        GRBQuadExpr sumX = 0;
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            sumX += x[iter_m] * y[iter_m];
+        }
+        model.addQConstr(sumX <= W);
+
+        //// Constraint Ax + By <= D : sum_X <= W
+        //GRBLinExpr sumX = 0;
+        //for (int iter_m = 0; iter_m < m; iter_m++) {
+        //    sumX += x[iter_m];
+        //}
+        //model.addConstr(sumX <= W);
 
         // Constraint y_i = 1
         model.addConstr(y[i] == 0);
@@ -301,26 +301,26 @@ bool McCormick::max_1w_z_1(int m, int K, double W, int M, int i, int k, double b
             model.addConstr(x[iter_m] == sumZi);
         }
 
-        //// Constraint sum_Y <= M
-        //GRBLinExpr sumY = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumY += y[iter_m];
-        //}
-        //model.addConstr(sumY <= M);
-
-        //// Constraint sum_X <= W
-        //GRBQuadExpr sumX = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumX += x[iter_m] * y[iter_m];
-        //}
-        //model.addQConstr(sumX <= W);
-
-        // Constraint Ax + By <= D : sum_X <= W
-        GRBLinExpr sumX = 0;
+        // Constraint sum_Y <= M
+        GRBLinExpr sumY = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumY += y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addConstr(sumY <= M);
+
+        // Constraint sum_X <= W
+        GRBQuadExpr sumX = 0;
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            sumX += x[iter_m] * y[iter_m];
+        }
+        model.addQConstr(sumX <= W);
+
+        //// Constraint Ax + By <= D : sum_X <= W
+        //GRBLinExpr sumX = 0;
+        //for (int iter_m = 0; iter_m < m; iter_m++) {
+        //    sumX += x[iter_m];
+        //}
+        //model.addConstr(sumX <= W);
 
         // Constraint z_ik = 1
         model.addConstr(z[i][k] == 1);
@@ -410,26 +410,26 @@ bool McCormick::max_1w_z_0(int m, int K, double W, int M, int i, int k, double b
             model.addConstr(x[iter_m] == sumZi);
         }
 
-        //// Constraint sum_Y <= M
-        //GRBLinExpr sumY = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumY += y[iter_m];
-        //}
-        //model.addConstr(sumY <= M);
-
-        //// Constraint sum_X <= W
-        //GRBQuadExpr sumX = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumX += x[iter_m] * y[iter_m];
-        //}
-        //model.addQConstr(sumX <= W);
-
-        // Constraint Ax + By <= D : sum_X <= W
-        GRBLinExpr sumX = 0;
+        // Constraint sum_Y <= M
+        GRBLinExpr sumY = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumY += y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addConstr(sumY <= M);
+
+        // Constraint sum_X <= W
+        GRBQuadExpr sumX = 0;
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            sumX += x[iter_m] * y[iter_m];
+        }
+        model.addQConstr(sumX <= W);
+
+        //// Constraint Ax + By <= D : sum_X <= W
+        //GRBLinExpr sumX = 0;
+        //for (int iter_m = 0; iter_m < m; iter_m++) {
+        //    sumX += x[iter_m];
+        //}
+        //model.addConstr(sumX <= W);
 
         // Constraint z_ik = 1
         model.addConstr(z[i][k] == 0);
@@ -613,26 +613,26 @@ bool McCormick::min_1w_y_1(int m, int K, double W, int M, int i, double b_t, vec
             model.addConstr(x[iter_m] == sumZi);
         }
 
-        //// Constraint sum_Y <= M
-        //GRBLinExpr sumY = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumY += y[iter_m];
-        //}
-        //model.addConstr(sumY <= M);
-
-        //// Constraint sum_X <= W
-        //GRBQuadExpr sumX = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumX += x[iter_m] * y[iter_m];
-        //}
-        //model.addQConstr(sumX <= W);
-
-        // Constraint Ax + By <= D : sum_X <= W
-        GRBLinExpr sumX = 0;
+        // Constraint sum_Y <= M
+        GRBLinExpr sumY = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumY += y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addConstr(sumY <= M);
+
+        // Constraint sum_X <= W
+        GRBQuadExpr sumX = 0;
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            sumX += x[iter_m] * y[iter_m];
+        }
+        model.addQConstr(sumX <= W);
+
+        //// Constraint Ax + By <= D : sum_X <= W
+        //GRBLinExpr sumX = 0;
+        //for (int iter_m = 0; iter_m < m; iter_m++) {
+        //    sumX += x[iter_m];
+        //}
+        //model.addConstr(sumX <= W);
 
         // Constraint y_i = 1
         model.addConstr(y[i] == 1);
@@ -722,26 +722,26 @@ bool McCormick::min_1w_y_0(int m, int K, double W, int M, int i, double b_t, vec
             model.addConstr(x[iter_m] == sumZi);
         }
 
-        //// Constraint sum_Y <= M
-        //GRBLinExpr sumY = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumY += y[iter_m];
-        //}
-        //model.addConstr(sumY <= M);
-
-        //// Constraint sum_X <= W
-        //GRBQuadExpr sumX = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumX += x[iter_m] * y[iter_m];
-        //}
-        //model.addQConstr(sumX <= W);
-
-        // Constraint Ax + By <= D : sum_X <= W
-        GRBLinExpr sumX = 0;
+        // Constraint sum_Y <= M
+        GRBLinExpr sumY = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumY += y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addConstr(sumY <= M);
+
+        // Constraint sum_X <= W
+        GRBQuadExpr sumX = 0;
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            sumX += x[iter_m] * y[iter_m];
+        }
+        model.addQConstr(sumX <= W);
+
+        //// Constraint Ax + By <= D : sum_X <= W
+        //GRBLinExpr sumX = 0;
+        //for (int iter_m = 0; iter_m < m; iter_m++) {
+        //    sumX += x[iter_m];
+        //}
+        //model.addConstr(sumX <= W);
 
         // Constraint y_i = 1
         model.addConstr(y[i] == 0);
@@ -831,26 +831,26 @@ bool McCormick::min_1w_z_1(int m, int K, double W, int M, int i, int k, double b
             model.addConstr(x[iter_m] == sumZi);
         }
 
-        //// Constraint sum_Y <= M
-        //GRBLinExpr sumY = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumY += y[iter_m];
-        //}
-        //model.addConstr(sumY <= M);
-
-        //// Constraint sum_X <= W
-        //GRBQuadExpr sumX = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumX += x[iter_m] * y[iter_m];
-        //}
-        //model.addQConstr(sumX <= W);
-
-        // Constraint Ax + By <= D : sum_X <= W
-        GRBLinExpr sumX = 0;
+        // Constraint sum_Y <= M
+        GRBLinExpr sumY = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumY += y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addConstr(sumY <= M);
+
+        // Constraint sum_X <= W
+        GRBQuadExpr sumX = 0;
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            sumX += x[iter_m] * y[iter_m];
+        }
+        model.addQConstr(sumX <= W);
+
+        //// Constraint Ax + By <= D : sum_X <= W
+        //GRBLinExpr sumX = 0;
+        //for (int iter_m = 0; iter_m < m; iter_m++) {
+        //    sumX += x[iter_m];
+        //}
+        //model.addConstr(sumX <= W);
 
         // Constraint z[i][k] = 1
         model.addConstr(z[i][k] == 1);
@@ -941,26 +941,26 @@ bool McCormick::min_1w_z_0(int m, int K, double W, int M, int i, int k, double b
             model.addConstr(x[iter_m] == sumZi);
         }
 
-        //// Constraint sum_Y <= M
-        //GRBLinExpr sumY = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumY += y[iter_m];
-        //}
-        //model.addConstr(sumY <= M);
-
-        //// Constraint sum_X <= W
-        //GRBQuadExpr sumX = 0;
-        //for (int iter_m = 0; iter_m < m; iter_m++) {
-        //    sumX += x[iter_m] * y[iter_m];
-        //}
-        //model.addQConstr(sumX <= W);
-
-        // Constraint Ax + By <= D : sum_X <= W
-        GRBLinExpr sumX = 0;
+        // Constraint sum_Y <= M
+        GRBLinExpr sumY = 0;
         for (int iter_m = 0; iter_m < m; iter_m++) {
-            sumX += x[iter_m];
+            sumY += y[iter_m];
         }
-        model.addConstr(sumX <= W);
+        model.addConstr(sumY <= M);
+
+        // Constraint sum_X <= W
+        GRBQuadExpr sumX = 0;
+        for (int iter_m = 0; iter_m < m; iter_m++) {
+            sumX += x[iter_m] * y[iter_m];
+        }
+        model.addQConstr(sumX <= W);
+
+        //// Constraint Ax + By <= D : sum_X <= W
+        //GRBLinExpr sumX = 0;
+        //for (int iter_m = 0; iter_m < m; iter_m++) {
+        //    sumX += x[iter_m];
+        //}
+        //model.addConstr(sumX <= W);
 
         // Constraint z[i][k] = 1
         model.addConstr(z[i][k] == 0);
