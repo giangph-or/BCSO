@@ -119,8 +119,8 @@ void ScipSolverAssortment::solve(string output, int time_limit) {
 	SCIPsetObjsense(scip, SCIP_OBJSENSE_MAXIMIZE);
 	SCIPsetRealParam(scip, "limits/time", 3600);
 	SCIPsetRealParam(scip, "limits/gap", 1e-4);
-	SCIPsetRealParam(scip, "parallel/maxnthreads", 64);
-	SCIPsetRealParam(scip, "parallel/minnthreads", 8);
+	SCIPsetIntParam(scip, "parallel/maxnthreads", 64);
+	SCIPsetIntParam(scip, "parallel/minnthreads", 8);
 	//SCIPwriteOrigProblem(scip, "model.lp", nullptr, FALSE);
 
 	auto start = chrono::steady_clock::now(); //get start time
@@ -296,8 +296,8 @@ void ScipSolverFacility::solve(string output, int time_limit) {
 	SCIPsetObjsense(scip, SCIP_OBJSENSE_MAXIMIZE);
 	SCIPsetRealParam(scip, "limits/time", 3600);
 	SCIPsetRealParam(scip, "limits/gap", 1e-4);
-	SCIPsetRealParam(scip, "parallel/maxnthreads", 64);
-	SCIPsetRealParam(scip, "parallel/minnthreads", 8);
+	SCIPsetIntParam(scip, "parallel/maxnthreads", 64);
+	SCIPsetIntParam(scip, "parallel/minnthreads", 8);
 	//SCIPwriteOrigProblem(scip, "model.lp", nullptr, FALSE);
 
 	auto start = chrono::steady_clock::now(); //get start time
