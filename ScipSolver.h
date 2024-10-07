@@ -38,7 +38,7 @@ public:
     double time_for_param = 0;
     double time_for_solve = 0;
     double gap = 0;
-    double obj_val_cplex = 0;
+    double obj_val_scip = 0;
     double obj_val_true = 0;
 
     ScipSolverFacility();

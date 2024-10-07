@@ -124,6 +124,12 @@ int main(int argc, char* argv[]) {
 			MISOCPSolverFacility misocpSolver(data, K, tol_lamda, M);
 			misocpSolver.solve(output, time_limit);
 		}
+
+		if (solver == "scip") {
+			string output = "out_FLC//scip//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
+			ScipSolverFacility scipSolver(data, K, tol_lamda, M);
+			scipSolver.solve(output, time_limit);
+		}
 	}
 }
 
