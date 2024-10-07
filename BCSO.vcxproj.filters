@@ -33,19 +33,13 @@
     <ClInclude Include="MILPSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BCMISOCPSolver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BCMILPSolver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BCBilinearSolver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BilinearNew.h">
+    <ClInclude Include="Bilinear.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScipSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OAMILPSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,19 +65,13 @@
     <ClCompile Include="MILPSolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BCMISOCPSolver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BCMILPSolver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BCBilinearSolver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BilinearNew.cpp">
+    <ClCompile Include="Bilinear.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScipSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OAMILPSolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

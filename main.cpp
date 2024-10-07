@@ -2,10 +2,8 @@
 #include "Data.h"
 #include "MISOCPSolver.h"
 #include "MILPSolver.h"
-#include "BCMISOCPSolver.h"
-#include "BCMILPSolver.h"
-#include "BilinearNew.h"
-#include "BCBilinearSolver.h"
+#include "OAMILPSolver.h"
+#include "Bilinear.h"
 #include "ApproxByGurobi.h"
 #include "ScipSolver.h"
 

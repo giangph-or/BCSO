@@ -1,4 +1,4 @@
-#include "BilinearNew.h"
+#include "Bilinear.h"
 
 using namespace std;
 
