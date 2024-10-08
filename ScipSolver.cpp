@@ -24,8 +24,10 @@ void ScipSolverAssortment::solve(string output, int time_limit) {
 	SCIPincludeDefaultPlugins(scip);
 	SCIPcreateProbBasic(scip, "BCSO");
 
-	vector<SCIP_VAR*> x(data.m);
-	vector<SCIP_VAR*> y(data.m);
+	SCIP_VAR** x;
+	x = new SCIP_VAR * [data.m];
+	SCIP_VAR** y;
+	y = new SCIP_VAR * [data.m];
 
 	for (int i = 0; i < data.m; ++i) {
 		string varName = "x" + std::to_string(i + 1);
@@ -57,6 +59,7 @@ void ScipSolverAssortment::solve(string output, int time_limit) {
 		xy[0] = expr_x[i];
 		xy[1] = expr_y[i];
 		SCIPcreateExprProduct(scip, &expr_xy[i], 2, xy, 1.0, NULL, NULL);
+		SCIPreleaseExpr(scip, xy);
 	}
 	SCIP_EXPR* sum_xy;
 	SCIPcreateExprSum(scip, &sum_xy, data.m, expr_xy, NULL, 0.0, NULL, NULL);
@@ -70,8 +73,10 @@ void ScipSolverAssortment::solve(string output, int time_limit) {
 	frac = new SCIP_EXPR * [data.T];
 	for (int j = 0; j < data.T; ++j) {
 		SCIP_EXPR* exprs[2];
-		vector<SCIP_EXPR*> exp(data.m);
-		vector<SCIP_EXPR*> power(data.m);
+		SCIP_EXPR** exp;
+		exp = new SCIP_EXPR * [data.m];
+		SCIP_EXPR** power;
+		power = new SCIP_EXPR * [data.m];
 		SCIP_EXPR** product_xy;
 		product_xy = new SCIP_EXPR * [data.m];
 		SCIP_EXPR** product_y;
@@ -88,6 +93,8 @@ void ScipSolverAssortment::solve(string output, int time_limit) {
 			ye[0] = expr_y[i];
 			ye[1] = exp[i];
 			SCIPcreateExprProduct(scip, &product_y[i], 2, ye, 1, NULL, NULL);
+			SCIPreleaseExpr(scip, xye);
+			SCIPreleaseExpr(scip, ye);
 		}
 		SCIPcreateExprSum(scip, &exprs[0], data.m, product_xy, NULL, 0, NULL, NULL);
 		SCIP_EXPR* denominator;
@@ -96,6 +103,13 @@ void ScipSolverAssortment::solve(string output, int time_limit) {
 		SCIPcreateExprSum(scip, &denominator1, 1, &denominator, NULL, 1, NULL, NULL);
 		SCIPcreateExprPow(scip, &exprs[1], denominator1, -1.0, NULL, NULL);
 		SCIPcreateExprProduct(scip, &frac[j], 2, exprs, 1.0, NULL, NULL);
+		SCIPreleaseExpr(scip, exprs);
+		SCIPreleaseExpr(scip, product_xy);
+		SCIPreleaseExpr(scip, product_y);
+		SCIPreleaseExpr(scip, exp);
+		SCIPreleaseExpr(scip, power);
+		SCIPreleaseExpr(scip, &denominator);
+		SCIPreleaseExpr(scip, &denominator1);
 	}
 	SCIPcreateExprSum(scip, &obj, data.T, frac, NULL, 0.0, NULL, NULL);
 
@@ -121,7 +135,24 @@ void ScipSolverAssortment::solve(string output, int time_limit) {
 	SCIPsetRealParam(scip, "limits/gap", 1e-4);
 	SCIPsetIntParam(scip, "parallel/maxnthreads", 64);
 	SCIPsetIntParam(scip, "parallel/minnthreads", 8);
+	SCIPsetRealParam(scip, "concurrent/scip-feas/prefprio", 1);
+	SCIPsetRealParam(scip, "concurrent/scip-opti/prefprio", 1);
 	//SCIPwriteOrigProblem(scip, "model.lp", nullptr, FALSE);
+
+	//release expressions
+	SCIPreleaseExpr(scip, expr_x);
+	SCIPreleaseExpr(scip, expr_y);
+	SCIPreleaseExpr(scip, &expr_z);
+	SCIPreleaseExpr(scip, expr_xy);
+	SCIPreleaseExpr(scip, &sum_xy);
+	SCIPreleaseExpr(scip, &obj);
+	SCIPreleaseExpr(scip, frac);
+	SCIPreleaseExpr(scip, &sum_obj);
+
+	//release constraints
+	SCIPreleaseCons(scip, &ct_sum_y);
+	SCIPreleaseCons(scip, &ct_sum_xy);
+	SCIPreleaseCons(scip, &ct_obj);
 
 	auto start = chrono::steady_clock::now(); //get start time
 	auto end = chrono::steady_clock::now();
@@ -176,6 +207,12 @@ void ScipSolverAssortment::solve(string output, int time_limit) {
 		report_results << "x[" << iter_m << "] = " << setprecision(5) << ansX[iter_m] << endl;
 	}
 	report_results.close();
+
+	//release variables
+	SCIPreleaseVar(scip, x);
+	SCIPreleaseVar(scip, y);
+	SCIPreleaseVar(scip, &z);
+	SCIPfree(&scip);
 }
 
 ScipSolverFacility::ScipSolverFacility() {
@@ -202,8 +239,10 @@ void ScipSolverFacility::solve(string output, int time_limit) {
 	SCIPincludeDefaultPlugins(scip);
 	SCIPcreateProbBasic(scip, "BCSO");
 
-	vector<SCIP_VAR*> x(data.m);
-	vector<SCIP_VAR*> y(data.m);
+	SCIP_VAR** x;
+	x = new SCIP_VAR * [data.m];
+	SCIP_VAR** y;
+	y = new SCIP_VAR * [data.m];
 
 	for (int i = 0; i < data.m; ++i) {
 		string varName = "x" + std::to_string(i + 1);
@@ -235,6 +274,7 @@ void ScipSolverFacility::solve(string output, int time_limit) {
 		xy[0] = expr_x[i];
 		xy[1] = expr_y[i];
 		SCIPcreateExprProduct(scip, &expr_xy[i], 2, xy, 1.0, NULL, NULL);
+		SCIPreleaseExpr(scip, xy);
 	}
 	SCIP_EXPR* sum_xy;
 	SCIPcreateExprSum(scip, &sum_xy, data.m, expr_xy, NULL, 0.0, NULL, NULL);
@@ -248,8 +288,10 @@ void ScipSolverFacility::solve(string output, int time_limit) {
 	frac = new SCIP_EXPR * [data.T];
 	for (int j = 0; j < data.T; ++j) {
 		SCIP_EXPR* exprs[2];
-		vector<SCIP_EXPR*> exp(data.m);
-		vector<SCIP_EXPR*> power(data.m);
+		SCIP_EXPR** exp;
+		exp = new SCIP_EXPR * [data.m];
+		SCIP_EXPR** power;
+		power = new SCIP_EXPR * [data.m];
 		SCIP_EXPR** product_xy;
 		product_xy = new SCIP_EXPR * [data.m];
 		SCIP_EXPR** product_y;
@@ -265,6 +307,8 @@ void ScipSolverFacility::solve(string output, int time_limit) {
 			ye[0] = expr_y[i];
 			ye[1] = exp[i];
 			SCIPcreateExprProduct(scip, &product_y[i], 2, ye, 1, NULL, NULL);
+			SCIPreleaseExpr(scip, xye);
+			SCIPreleaseExpr(scip, ye);
 		}
 		SCIPcreateExprSum(scip, &exprs[0], data.m, product_xy, NULL, 0, NULL, NULL);
 		SCIP_EXPR* denominator;
@@ -273,6 +317,13 @@ void ScipSolverFacility::solve(string output, int time_limit) {
 		SCIPcreateExprSum(scip, &denominator1, 1, &denominator, NULL, data.b[j], NULL, NULL);
 		SCIPcreateExprPow(scip, &exprs[1], denominator1, -1.0, NULL, NULL);
 		SCIPcreateExprProduct(scip, &frac[j], 2, exprs, 1.0, NULL, NULL);
+		SCIPreleaseExpr(scip, exprs);
+		SCIPreleaseExpr(scip, product_xy);
+		SCIPreleaseExpr(scip, product_y);
+		SCIPreleaseExpr(scip, exp);
+		SCIPreleaseExpr(scip, power);
+		SCIPreleaseExpr(scip, &denominator);
+		SCIPreleaseExpr(scip, &denominator1);
 	}
 	SCIPcreateExprSum(scip, &obj, data.T, frac, NULL, 0.0, NULL, NULL);
 
@@ -298,7 +349,24 @@ void ScipSolverFacility::solve(string output, int time_limit) {
 	SCIPsetRealParam(scip, "limits/gap", 1e-4);
 	SCIPsetIntParam(scip, "parallel/maxnthreads", 64);
 	SCIPsetIntParam(scip, "parallel/minnthreads", 8);
+	SCIPsetRealParam(scip, "concurrent/scip-feas/prefprio", 1);
+	SCIPsetRealParam(scip, "concurrent/scip-opti/prefprio", 1);
 	//SCIPwriteOrigProblem(scip, "model.lp", nullptr, FALSE);
+
+	//release expressions
+	SCIPreleaseExpr(scip, expr_x);
+	SCIPreleaseExpr(scip, expr_y);
+	SCIPreleaseExpr(scip, &expr_z);
+	SCIPreleaseExpr(scip, expr_xy);
+	SCIPreleaseExpr(scip, &sum_xy);
+	SCIPreleaseExpr(scip, &obj);
+	SCIPreleaseExpr(scip, frac);
+	SCIPreleaseExpr(scip, &sum_obj);
+
+	//release constraints
+	SCIPreleaseCons(scip, &ct_sum_y);
+	SCIPreleaseCons(scip, &ct_sum_xy);
+	SCIPreleaseCons(scip, &ct_obj);
 
 	auto start = chrono::steady_clock::now(); //get start time
 	auto end = chrono::steady_clock::now();
@@ -350,4 +418,10 @@ void ScipSolverFacility::solve(string output, int time_limit) {
 		report_results << "x[" << iter_m << "] = " << setprecision(5) << ansX[iter_m] << endl;
 	}
 	report_results.close();
+
+	//release variables
+	SCIPreleaseVar(scip, x);
+	SCIPreleaseVar(scip, y);
+	SCIPreleaseVar(scip, &z);
+	SCIPfree(&scip);
 }
