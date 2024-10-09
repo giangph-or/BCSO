@@ -198,7 +198,7 @@ void ScipSolverAssortment::solve(string output, int time_limit) {
 	ofstream report_results(output, ofstream::out);
 	report_results << data.m << "," << data.W << "," << param.M
 		<< setprecision(8) << fixed << "," << obj_val_scip
-		<< "," << obj_val_true << "," << time_for_solve << "," << gap << endl;
+		<< "," << obj_val_true << "," << time_for_solve << "," << gap*100 << endl;
 	for (int iter_m = 0; iter_m < data.m; iter_m++) {
 		report_results << "y[" << iter_m << "] = " << ansY[iter_m] << endl;
 	}
@@ -409,7 +409,7 @@ void ScipSolverFacility::solve(string output, int time_limit) {
 	ofstream report_results(output, ofstream::out);
 	report_results << data.m << "," << data.C << "," << param.M
 		<< setprecision(8) << fixed << "," << obj_val_scip
-		<< "," << obj_val_true << "," << time_for_solve << "," << gap << endl;
+		<< "," << obj_val_true << "," << time_for_solve << "," << gap*100 << endl;
 	for (int iter_m = 0; iter_m < data.m; iter_m++) {
 		report_results << "y[" << iter_m << "] = " << ansY[iter_m] << endl;
 	}
