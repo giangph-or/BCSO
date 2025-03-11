@@ -6,6 +6,7 @@
 #include "Bilinear.h"
 #include "ApproxByGurobi.h"
 #include "ScipSolver.h"
+#include "ExpCone.h"
 
 int main(int argc, char* argv[]) {
 	string problem = argv[1];
@@ -39,6 +40,12 @@ int main(int argc, char* argv[]) {
 			string output = "out_AP//binew//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
 			BilinearNewAssortment bilinearNew(data, K, tol_lamda, M);
 			bilinearNew.solve(output, time_limit);
+		}
+
+		if (solver == "expcone") {
+			string output = "out_AP//expcone_BC//" + instance_name + "_" + to_string(id) + "_" + to_string(M) + "_" + to_string(K) + ".txt";
+			ExpConeAssortment expcone(data, K, tol_lamda, M);
+			expcone.solve_BC(output, time_limit);
 		}
 
 		if (solver == "pwlGRB") {

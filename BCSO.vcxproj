@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ApproxByGurobi.h" />
+    <ClInclude Include="ExpCone.h" />
     <ClInclude Include="OAMILPSolver.h" />
     <ClInclude Include="Bilinear.h" />
     <ClInclude Include="Data.h" />
@@ -149,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApproxByGurobi.cpp" />
+    <ClCompile Include="ExpCone.cpp" />
     <ClCompile Include="OAMILPSolver.cpp" />
     <ClCompile Include="Bilinear.cpp" />
     <ClCompile Include="Data.cpp" />
