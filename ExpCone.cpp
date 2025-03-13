@@ -444,7 +444,8 @@ void ExpConeAssortment::solve_BC(string output, int time_limit) {
 		//model.set(GRB_IntParam_OutputFlag, 0);
 		model.set(GRB_DoubleParam_TimeLimit, 3600);
 		model.set(GRB_IntParam_MIQCPMethod, 1);
-		model.set(GRB_IntParam_FuncPieces, 100);
+		//model.set(GRB_IntParam_FuncPieces, 50);
+		model.set(GRB_DoubleParam_FuncPieceError, 1e-3);
 		//model.set(GRB_DoubleParam_MIPGap, 1e-4);
 		model.set(GRB_IntParam_LazyConstraints, 1);
 
